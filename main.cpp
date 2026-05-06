@@ -30,6 +30,8 @@ class Particle {
   double m_;
 
  public:
+  Particle(Position p, Velocity v, double m)
+      : p_{p}, v_{v}, a_{0., 0.}, m_{m} {}
 };
 
 std::vector<Particle> system{};
