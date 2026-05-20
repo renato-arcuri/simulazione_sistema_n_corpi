@@ -68,9 +68,9 @@ void step(std::vector<Particle>& system) {
     Particle::stepPosition(s);
   }
 
-  for (int i{1}; i != N; ++i) {
+  for (auto i : system) {
     Acceleration sum{0., 0.};
-    for (int j{1}; j != N; ++j) {
+    for (auto j : system) {
       if (j != i) {
         sum += Particle::stepAcceleration;
       }
