@@ -1,6 +1,7 @@
 // #include "progetto.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 namespace pf {
@@ -14,28 +15,68 @@ struct Position {
 };
 
 struct Velocity {
-  double v_x;
-  double v_y;
+  double vx;
+  double vy;
 };
 
 struct Acceleration {
-  double a_x;
-  double a_y;
+  double ax;
+  double ay;
 };
 
 class Particle {
   Position p_;
   Velocity v_;
-  Acceleration a_;
   double m_;
 
+  Acceleration a_;
+
  public:
-  Particle(Position p, Velocity v, double m)
-      : p_{p}, v_{v}, a_{0., 0.}, m_{m} {}
+  Particle(Position p, Velocity v, double m) : p_{p}, v_{v}, m_{m} {}
+
+  void setAcceleration(Acceleration a, int i) {}
+
+  void stepPosition(Particle& a) {
+    a.p_.x =
+        a.p_.x + a.v_.vx * TIME_STEP + a.a_.ax * TIME_STEP * TIME_STEP * 0.5;
+    a.p_.y =
+        a.p_.y + a.v_.vy * TIME_STEP + a.a_.ay * TIME_STEP * TIME_STEP * 0.5;
+  }
+
+  Acceleration stepAcceleration(Particle a, Particle b) {
+    Acceleration result;
+    double distx = b.p_.x - a.p_.x;
+    double disty = b.p_.y - a.p_.y;
+
+    result.ax = (G * b.m_) * (-distx) /
+                pow(((distx * distx) + SOFTENING * SOFTENING), 1.5);
+    result.ay = (G * b.m_) * (-disty) /
+                pow(((disty * disty) + SOFTENING * SOFTENING), 1.5);
+
+    return result;
+  }
 };
 
-std::vector<Particle> system{};
+auto operator!=(Particle a, Particle b) {
+  if (a.p_ != b.p_ || a.v_ != b.v_ || a.m_ != b.m_ || a.a_ != b.a_) return true;
+}
 
-void step() {}
+void step(std::vector<Particle>& system) {
+  auto N{system.size()};
+
+  for (auto& s : system) {
+    Particle::stepPosition(s);
+  }
+
+  for (int i{1}; i != N; ++i) {
+    Acceleration sum{0., 0.};
+    for (int j{1}; j != N; ++j) {
+      if (j != i) {
+        sum += Particle::stepAcceleration;
+      }
+    }
+    Particle::setAcceleration(sum, i);
+  }
+}
 
 }  // namespace pf
