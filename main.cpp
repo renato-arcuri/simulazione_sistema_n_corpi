@@ -5,9 +5,6 @@
 #include <vector>
 
 namespace pf {
-constexpr double G{6.67e-11};
-constexpr double TIME_STEP{0.001};
-constexpr double SOFTENING{1e-12};
 
 struct Position {
   double x;
@@ -25,6 +22,10 @@ struct Acceleration {
 };
 
 class Particle {
+  static constexpr double G{6.67e-11};
+  static constexpr double TIME_STEP{0.001};
+  static constexpr double SOFTENING{1e-12};
+
   Position p_;
   Velocity v_;
   double m_;
