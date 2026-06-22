@@ -5,79 +5,73 @@
 #include <vector>
 
 namespace pf {
+constexpr double G{6.67e-11};
+constexpr double TIME_STEP{0.001};
+constexpr double SOFTENING{1e-12};
 
-struct Position {
+struct vec {
   double x;
   double y;
 };
 
-struct Velocity {
-  double vx;
-  double vy;
-};
-
-struct Acceleration {
-  double ax;
-  double ay;
-};
-
-class Particle {
-  static constexpr double G{6.67e-11};
-  static constexpr double TIME_STEP{0.001};
-  static constexpr double SOFTENING{1e-12};
-
-  Position p_;
-  Velocity v_;
-  double m_;
-
-  Acceleration a_;
-
- public:
-  Particle(Position p, Velocity v, double m) : p_{p}, v_{v}, m_{m} {}
-
-  void setAcceleration(Acceleration a, int i) {}
-
-  void stepPosition(Particle& a) {
-    a.p_.x =
-        a.p_.x + a.v_.vx * TIME_STEP + a.a_.ax * TIME_STEP * TIME_STEP * 0.5;
-    a.p_.y =
-        a.p_.y + a.v_.vy * TIME_STEP + a.a_.ay * TIME_STEP * TIME_STEP * 0.5;
-  }
-
-  Acceleration stepAcceleration(Particle a, Particle b) {
-    Acceleration result;
-    double distx = b.p_.x - a.p_.x;
-    double disty = b.p_.y - a.p_.y;
-
-    result.ax = (G * b.m_) * (-distx) /
-                pow(((distx * distx) + SOFTENING * SOFTENING), 1.5);
-    result.ay = (G * b.m_) * (-disty) /
-                pow(((disty * disty) + SOFTENING * SOFTENING), 1.5);
-
-    return result;
-  }
-};
-
-auto operator!=(Particle a, Particle b) {
-  if (a.p_ != b.p_ || a.v_ != b.v_ || a.m_ != b.m_ || a.a_ != b.a_) return true;
+auto operator+(const vec &v1, const vec &v2) {
+  return vec{v1.x + v2.x, v1.y + v2.y};
 }
 
-void step(std::vector<Particle>& system) {
+auto operator*(const vec &v, double c) { return vec{v.x * c, v.y * c}; }
+
+auto operatorpow(const vec &v, double c) {
+  return vec{pow(v.x, c), pow(v.y, c)};
+}
+
+double dt = TIME_STEP;
+
+class Particle {
+  vec position_;
+  vec acceleration_;
+  vec velocity_;
+  double mass_;
+
+public:
+  Particle(vec p, vec v, double m) : position_{p}, velocity_{v}, mass_{m} {}
+
+  void setAcceleration(vec a) { acceleration_ = a; }
+
+  void computePosition() {
+    position_ = position_ + (velocity_ * dt) + (acceleration_ * dt * dt * 0.5);
+  }
+
+  vec computeAcceleration(const Particle &a, const Particle &b) {
+    vec r{b.position_.x - a.position_.x, b.position_.y - a.position_.y};
+
+    double r2 = r.x * r.x + r.y * r.y + SOFTENING * SOFTENING;
+    double denom = std::pow(r2, 1.5);
+
+    vec result{r * (G * b.mass_ / denom)};
+    return result;
+  }
+
+  void computeVelocity() {} // ,,,
+};
+
+void step(std::vector<Particle> &system) {
   auto N{system.size()};
 
-  for (auto& s : system) {
-    Particle::stepPosition(s);
+  for (auto s : system) {
+    s.computePosition();
   }
 
   for (auto i : system) {
-    Acceleration sum{0., 0.};
+    vec sum{0., 0.};
     for (auto j : system) {
-      if (j != i) {
-        sum += Particle::stepAcceleration;
+      if (&j != &i) {
+        sum = sum + i.computeAcceleration(i, j);
       }
     }
-    Particle::setAcceleration(sum, i);
+    i.setAcceleration(sum);
   }
+
+  // ciclo che aggiorna le velocità  ...
 }
 
-}  // namespace pf
+} // namespace pf
