@@ -50,17 +50,17 @@ class Particle {
   void setAcceleration(const Vec &a) { acceleration_ = a; }
 
   void computePosition(const Config &cfg) {
-    position_ = position_ + getVelocity() * cfg.dt +
-                getAcceleration() * (0.5 * cfg.dt * cfg.dt);
+    position_ =
+        position_ + velocity_ * cfg.dt + acceleration_ * 0.5 * cfg.dt * cfg.dt;
   }
 
   void computeVelocity(const Vec &a_old, const Config &cfg) {
     velocity_ = velocity_ + 0.5 * cfg.dt * (a_old + acceleration_);
   }
 
-  Vec Momentum() const { return velocity_ * mass_; }
+  Vec momentum() const { return velocity_ * mass_; }
 
-  double AngularMomentum() const {
+  double angularMomentum() const {
     return mass_ * ((position_.x * velocity_.y) - (position_.y * velocity_.x));
   }
 };
@@ -122,18 +122,18 @@ double mechanicalEnergy(const std::vector<Particle> &system,
   return kineticEnergy(system) + potentialEnergy(system, cfg);
 }
 
-Vec TotalMomentum(const std::vector<Particle> &system) {
+Vec totalMomentum(const std::vector<Particle> &system) {
   Vec M{0., 0.};
   for (const auto &s : system) {
-    M = M + s.Momentum();
+    M = M + s.momentum();
   }
   return M;
 }
 
-double TotalAngularMomentum(const std::vector<Particle> &system) {
+double totalAngularMomentum(const std::vector<Particle> &system) {
   double L{0.};
   for (const auto &s : system) {
-    L = L + s.AngularMomentum();
+    L = L + s.angularMomentum();
   }
   return L;
 }
@@ -173,8 +173,8 @@ int main() {
     p.setAcceleration(pf::totalAcceleration(system, p, cfg));
   }
 
-  constexpr int N_STEPS{10000};
-  constexpr int PRINT_EVERY{500};
+  constexpr int N_STEPS{1000000};
+  constexpr int PRINT_EVERY{50000};
 
   std::cout << "\n";
   std::cout << "-------------------------------------------------------------"
@@ -206,8 +206,8 @@ int main() {
       double E_tot{pf::mechanicalEnergy(system, cfg)};
       double K{pf::kineticEnergy(system)};
       double U{pf::potentialEnergy(system, cfg)};
-      pf::Vec P{pf::TotalMomentum(system)};
-      double L{pf::TotalAngularMomentum(system)};
+      pf::Vec P{pf::totalMomentum(system)};
+      double L{pf::totalAngularMomentum(system)};
 
       std::cout.width(8);
       std::cout << s;
@@ -219,8 +219,6 @@ int main() {
       std::cout << U;
       std::cout.width(15);
       std::cout << pf::norm(P);
-      // std::cout.width(15);
-      // std::cout << P.y;
       std::cout.width(15);
       std::cout << L << "\n";
     }
@@ -229,3 +227,17 @@ int main() {
   std::cout << "-------------------------------------------------------------"
                "------------------------------------\n";
 }
+
+// PARTE GRAFICA
+#include <SFML>
+
+sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
+window.setFramerateLimit(60);
+
+sf::CircleShape particle(12.f);
+particle.setOrigin(12.f, 12.f);
+window.setOrigin(400.f, 300.f);
+
+particle.setFillColor(sf::Color::Cyan);
+
+particle.setPosition(p.getPosition());
