@@ -22,7 +22,8 @@ Vec operator+(const Vec &v1, const Vec &v2) {
 Vec operator-(const Vec &v1, const Vec &v2) {
   return Vec{v1.x - v2.x, v1.y - v2.y};
 }
-Vec operator*(double c, const Vec &v) { return v * c; }
+Vec operator*(double c, const Vec &v) { return Vec{v.x * c, v.y * c}; }
+Vec operator*(const Vec &v, double c) { return Vec{v.x * c, v.y * c}; }
 
 double norm2(const Vec &v) { return v.x * v.x + v.y * v.y; }
 double norm(const Vec &v) { return std::sqrt(norm2(v)); }
@@ -122,17 +123,19 @@ double mechanicalEnergy(const std::vector<Particle> &system,
 }
 
 Vec TotalMomentum(const std::vector<Particle> &system) {
-  for (auto s : system) {
-    TotalMomentum += s.Momentum;
-    return TotalMomentum;
+  Vec M{0., 0.};
+  for (const auto &s : system) {
+    M = M + s.Momentum();
   }
+  return M;
 }
 
-Vec TotalAngularMomentum(const std::vector<Particle> &system) {
-  for (auto s : system) {
-    TotalAngularMomentum += s.AngularMomentum;
-    return TotalAngularMomentum;
+double TotalAngularMomentum(const std::vector<Particle> &system) {
+  double L{0.};  // <--- Ora L è dichiarata come double
+  for (const auto &s : system) {
+    L = L + s.AngularMomentum();
   }
+  return L;
 }
 
 }  // namespace pf
@@ -142,7 +145,8 @@ int main() {
 
   constexpr double m{1.0};
   std::vector<pf::Particle> system{
-      pf::Particle{{-0.97000436, 0.24308753}, {0.4662036850, 0.4323657300}, m},
+      pf::Particle{
+          {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
       pf::Particle{{0.97000436, -0.24308753}, {0.4662036850, 0.4323657300}, m},
       pf::Particle{{0., 0.}, {-0.93240737, -0.86473146}, m},
   };
@@ -154,13 +158,60 @@ int main() {
   constexpr int N_STEPS{10000};
   constexpr int PRINT_EVERY{500};
 
-  std::cout << "step\tE_tot\t\tK\t\tU\n";
+  std::cout << "\n";
+  std::cout << "-------------------------------------------------------------"
+               "------------------------------------\n";
+
+  std::cout.setf(std::ios::scientific, std::ios::floatfield);
+  std::cout.precision(4);
+
+  std::cout.width(8);
+  std::cout << "Step";
+  std::cout.width(15);
+  std::cout << "E_tot";
+  std::cout.width(15);
+  std::cout << "Kinetic";
+  std::cout.width(15);
+  std::cout << "Potential";
+  std::cout.width(15);
+  std::cout << "P_x";
+  std::cout.width(15);
+  std::cout << "P_y";
+  std::cout.width(15);
+  std::cout << "L_z" << "\n";
+
+  std::cout << "-------------------------------------------------------------"
+               "------------------------------------\n";
+
   for (int s{0}; s < N_STEPS; ++s) {
     pf::step(system, cfg);
+
     if (s % PRINT_EVERY == 0) {
+      double E_tot{pf::mechanicalEnergy(system, cfg)};
       double K{pf::kineticEnergy(system)};
       double U{pf::potentialEnergy(system, cfg)};
-      std::cout << s << "\t" << K + U << "\t" << K << "\t" << U << "\n";
+      pf::Vec P{pf::TotalMomentum(system)};
+      double L{pf::TotalAngularMomentum(system)};
+
+      std::cout.width(8);
+      std::cout << s;
+      std::cout.width(15);
+      std::cout << E_tot;
+      std::cout.width(15);
+      std::cout << K;
+      std::cout.width(15);
+      std::cout << U;
+      std::cout.width(15);
+      std::cout << P.x;
+      std::cout.width(15);
+      std::cout << P.y;
+      std::cout.width(15);
+      std::cout << L << "\n";
     }
   }
+
+  std::cout << "-------------------------------------------------------------"
+               "------------------------------------\n";
+
+  return 0;
 }
