@@ -131,7 +131,7 @@ Vec TotalMomentum(const std::vector<Particle> &system) {
 }
 
 double TotalAngularMomentum(const std::vector<Particle> &system) {
-  double L{0.};  // <--- Ora L è dichiarata come double
+  double L{0.};
   for (const auto &s : system) {
     L = L + s.AngularMomentum();
   }
@@ -143,12 +143,30 @@ double TotalAngularMomentum(const std::vector<Particle> &system) {
 int main() {
   pf::Config cfg{};
 
-  constexpr double m{1.0};
+  const double m1{2.0e21};  // Stella centrale massiccia
+  const double m2{1.0e17};  // Pianeta in orbita
+  const double m3{1.0e13};  // Luna del pianeta
+
+  const pf::Vec r1{0.0, 0.0};
+  const pf::Vec r2{10.0, 0.0};
+  const pf::Vec r3{10.5, 0.0};  // Molto vicina al pianeta
+
+  const pf::Vec v1{0.0, 0.0};
+  const pf::Vec v2{0.0,
+                   115.498};  // Velocità orbitale circolare attorno alla stella
+  const pf::Vec v3{
+      0.0, 115.498 + 3.652};  // Velocità orbitale accoppiata pianeta+luna
+
   std::vector<pf::Particle> system{
-      pf::Particle{
-          {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
-      pf::Particle{{0.97000436, -0.24308753}, {0.4662036850, 0.4323657300}, m},
-      pf::Particle{{0., 0.}, {-0.93240737, -0.86473146}, m},
+      pf::Particle{r1, v1, m1}, pf::Particle{r2, v2, m2},
+      pf::Particle{r3, v3, m3},
+
+      /*
+        pf::Particle{
+            {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
+        pf::Particle{{0.97000436, -0.24308753}, {0.4662036850, 0.4323657300},
+        m}, pf::Particle{{0., 0.}, {-0.93240737, -0.86473146}, m},
+      */
   };
 
   for (auto &p : system) {
@@ -174,9 +192,7 @@ int main() {
   std::cout.width(15);
   std::cout << "Potential";
   std::cout.width(15);
-  std::cout << "P_x";
-  std::cout.width(15);
-  std::cout << "P_y";
+  std::cout << "P";
   std::cout.width(15);
   std::cout << "L_z" << "\n";
 
@@ -202,9 +218,9 @@ int main() {
       std::cout.width(15);
       std::cout << U;
       std::cout.width(15);
-      std::cout << P.x;
-      std::cout.width(15);
-      std::cout << P.y;
+      std::cout << pf::norm(P);
+      // std::cout.width(15);
+      // std::cout << P.y;
       std::cout.width(15);
       std::cout << L << "\n";
     }
@@ -212,6 +228,4 @@ int main() {
 
   std::cout << "-------------------------------------------------------------"
                "------------------------------------\n";
-
-  return 0;
 }
