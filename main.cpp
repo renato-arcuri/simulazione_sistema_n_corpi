@@ -22,7 +22,6 @@ Vec operator+(const Vec &v1, const Vec &v2) {
 Vec operator-(const Vec &v1, const Vec &v2) {
   return Vec{v1.x - v2.x, v1.y - v2.y};
 }
-Vec operator*(const Vec &v, double c) { return Vec{v.x * c, v.y * c}; }
 Vec operator*(double c, const Vec &v) { return v * c; }
 
 double norm2(const Vec &v) { return v.x * v.x + v.y * v.y; }
@@ -56,6 +55,12 @@ class Particle {
 
   void computeVelocity(const Vec &a_old, const Config &cfg) {
     velocity_ = velocity_ + 0.5 * cfg.dt * (a_old + acceleration_);
+  }
+
+  Vec Momentum() const { return velocity_ * mass_; }
+
+  double AngularMomentum() const {
+    return mass_ * ((position_.x * velocity_.y) - (position_.y * velocity_.x));
   }
 };
 
@@ -114,6 +119,20 @@ double potentialEnergy(const std::vector<Particle> &system, const Config &cfg) {
 double mechanicalEnergy(const std::vector<Particle> &system,
                         const Config &cfg) {
   return kineticEnergy(system) + potentialEnergy(system, cfg);
+}
+
+Vec TotalMomentum(const std::vector<Particle> &system) {
+  for (auto s : system) {
+    TotalMomentum += s.Momentum;
+    return TotalMomentum;
+  }
+}
+
+Vec TotalAngularMomentum(const std::vector<Particle> &system) {
+  for (auto s : system) {
+    TotalAngularMomentum += s.AngularMomentum;
+    return TotalAngularMomentum;
+  }
 }
 
 }  // namespace pf
