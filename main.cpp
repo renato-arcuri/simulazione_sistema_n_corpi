@@ -146,19 +146,20 @@ int main() {
   pf::Config cfg{};
 
   ////CONFIG INIZIALE (con questa non va...)
-  // const double m1{2.0e24};
-  // const double m2{1.0e17};
-  // const double m3{1.0e13};
+  // const double m1{2.0e14};
+  // const double m2{1.0e7};
+  // const double m3{1.0e3};
 
   // const pf::Vec r1{0.0, 0.0};
   // const pf::Vec r2{10.0, 0.0};
   // const pf::Vec r3{10.7, 0.0};
 
   // const pf::Vec v1{0.0, 0.0};
-  // const pf::Vec v2{0.0, 115.498};
-  // const pf::Vec v3{0.0, 115.498 + 2.58};
+  // const pf::Vec v2{115.498, 115.498};
+  // const pf::Vec v3{115.498 + 2.58, 115.498 + 2.58};
 
   // std::vector<pf::Particle> system{{r1, v1, m1}, {r2, v2, m2}, {r3, v3, m3}};
+
   /*
     pf::Particle{
         {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
@@ -225,7 +226,7 @@ int main() {
   system.push_back(pf::Particle{r8, v8, m8});
   system.push_back(pf::Particle{r9, v9, m9});
 
-  //--------------------
+  // //--------------------
 
   for (auto &p : system) {
     p.setAcceleration(pf::totalAcceleration(system, p, cfg));
@@ -297,6 +298,21 @@ int main() {
   std::vector<sf::Color> palette = {sf::Color::Red, sf::Color::Yellow,
                                     sf::Color::Green, sf::Color::Cyan};
 
+  auto p_min{system[0].getMass()};
+  for (int i{0}; i != system.size(); ++i) {
+    if (system[i].getMass() < p_min) {
+      p_min = system[i].getMass();
+    }
+  }
+
+  std::vector<float> radius;
+  for (int i{0}; i != system.size(); ++i) {
+    auto &p{system[i]};
+    float rad{static_cast<float>(std::pow(p.getMass() / p_min, 1.0 / 6.0))};
+    radius.push_back(rad);
+  }
+
+  // GAME LOOP
   while (window.isOpen()) {
     sf::Event event;
 
@@ -313,7 +329,7 @@ int main() {
     }
 
     // Step
-    if (!Timeout) {
+    if (Timeout == false) {
       for (int i{0}; i != 15; ++i) {
         pf::step(system, cfg);
       }  // serve farlo 15 volte perché il dt=1 ms mentre il frame
@@ -322,26 +338,20 @@ int main() {
     // Draw
     window.clear(sf::Color::Black);
 
-    double sum_r{0.0};
+    double sum_dist{0.0};
     for (const auto &p : system) {
-      sum_r += pf::norm(p.getPosition());
+      sum_dist += pf::norm(p.getPosition());
     }
-    double mean_r{sum_r / system.size()};
+    double mean_distance{sum_dist / system.size()};
 
-    float percentage{0.60f};
-    float target_radius{400.f * percentage};
-    float zoom{target_radius / static_cast<float>(mean_r)};
+    float target_radius{400.f * 0.6f};
+    float zoom{target_radius / static_cast<float>(mean_distance)};
 
     for (auto i = 0; i < system.size(); ++i) {
       const auto &p{system[i]};
 
-      float radius{static_cast<float>(std::pow(p.getMass(), 1.0 / 5.0)) *
-                   0.05f};
-      if (radius < 3.f) radius = 3.f;
-      if (radius > 20.f) radius = 20.f;
-
-      sf::CircleShape particle(radius);
-      particle.setOrigin(radius, radius);
+      sf::CircleShape particle(radius[i]);
+      particle.setOrigin(radius[i], radius[i]);
 
       float X{400.f + static_cast<float>(p.getPosition().x) * zoom};
       float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
