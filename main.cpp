@@ -1,5 +1,7 @@
+#include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <random>
 #include <stdexcept>
 #include <vector>
 
@@ -8,7 +10,7 @@ namespace pf {
 struct Config {
   double G{6.67e-11};
   double dt{0.001};
-  double softening{1e-12};
+  double softening{1.e-12};
 };
 
 struct Vec {
@@ -143,35 +145,91 @@ double totalAngularMomentum(const std::vector<Particle> &system) {
 int main() {
   pf::Config cfg{};
 
-  const double m1{2.0e21};  // Stella centrale massiccia
-  const double m2{1.0e17};  // Pianeta in orbita
-  const double m3{1.0e13};  // Luna del pianeta
+  ////CONFIG INIZIALE (con questa non va...)
+  // const double m1{2.0e24};
+  // const double m2{1.0e17};
+  // const double m3{1.0e13};
 
+  // const pf::Vec r1{0.0, 0.0};
+  // const pf::Vec r2{10.0, 0.0};
+  // const pf::Vec r3{10.7, 0.0};
+
+  // const pf::Vec v1{0.0, 0.0};
+  // const pf::Vec v2{0.0, 115.498};
+  // const pf::Vec v3{0.0, 115.498 + 2.58};
+
+  // std::vector<pf::Particle> system{{r1, v1, m1}, {r2, v2, m2}, {r3, v3, m3}};
+  /*
+    pf::Particle{
+        {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
+    pf::Particle{{0.97000436, -0.24308753}, {0.4662036850,
+    0.4323657300}, m}, pf::Particle{{0., 0.}, {-0.93240737,
+    -0.86473146}, m},};
+  */
+
+  // SIMULAZIONE CON SISTEMA SOLARE RIDOTTO
+
+  std::vector<pf::Particle> system;
+  // --- SOLE ---
+  const double m1{6.56e11};
   const pf::Vec r1{0.0, 0.0};
-  const pf::Vec r2{10.0, 0.0};
-  const pf::Vec r3{10.5, 0.0};  // Molto vicina al pianeta
-
   const pf::Vec v1{0.0, 0.0};
-  const pf::Vec v2{0.0,
-                   115.498};  // Velocità orbitale circolare attorno alla stella
-  const pf::Vec v3{
-      0.0, 115.498 + 3.652};  // Velocità orbitale accoppiata pianeta+luna
 
-  std::vector<pf::Particle> system{
-      pf::Particle{r1, v1, m1}, pf::Particle{r2, v2, m2},
-      pf::Particle{r3, v3, m3},
+  // --- MERCURIO ---
+  const double m2{1.08e5};
+  const pf::Vec r2{2.7, 0.0};
+  const pf::Vec v2{0.0, 4.02};
 
-      /*
-        pf::Particle{
-            {-0.97000436, 0.24308753e10}, {0.4662036850, 0.4323657300}, m},
-        pf::Particle{{0.97000436, -0.24308753}, {0.4662036850, 0.4323657300},
-        m}, pf::Particle{{0., 0.}, {-0.93240737, -0.86473146}, m},
-      */
-  };
+  // --- VENERE ---
+  const double m3{1.61e6};
+  const pf::Vec r3{5.1, 0.0};
+  const pf::Vec v3{0.0, 2.93};
+
+  // --- TERRA ---
+  const double m4{1.97e6};
+  const pf::Vec r4{7.0, 0.0};
+  const pf::Vec v4{0.0, 2.50};
+
+  // --- MARTE ---
+  const double m5{2.11e5};
+  const pf::Vec r5{10.7, 0.0};
+  const pf::Vec v5{0.0, 2.02};
+
+  // --- GIOVE ---
+  const double m6{6.26e8};
+  const pf::Vec r6{-15.0, 0.0};
+  const pf::Vec v6{0.0, -1.71};
+
+  // --- SATURNO ---
+  const double m7{1.87e8};
+  const pf::Vec r7{27.5, 0.0};
+  const pf::Vec v7{0.0, 1.26};
+
+  // --- URANO ---
+  const double m8{2.86e7};
+  const pf::Vec r8{-55.3, 0.0};
+  const pf::Vec v8{0.0, -0.89};
+
+  // --- NETTUNO ---
+  const double m9{3.37e7};
+  const pf::Vec r9{86.7, 0.0};
+  const pf::Vec v9{0.0, 0.71};
+
+  system.push_back(pf::Particle{r1, v1, m1});
+  system.push_back(pf::Particle{r2, v2, m2});
+  system.push_back(pf::Particle{r3, v3, m3});
+  system.push_back(pf::Particle{r4, v4, m4});
+  system.push_back(pf::Particle{r5, v5, m5});
+  system.push_back(pf::Particle{r6, v6, m6});
+  system.push_back(pf::Particle{r7, v7, m7});
+  system.push_back(pf::Particle{r8, v8, m8});
+  system.push_back(pf::Particle{r9, v9, m9});
+
+  //--------------------
 
   for (auto &p : system) {
     p.setAcceleration(pf::totalAcceleration(system, p, cfg));
-  }
+  };
 
   constexpr int N_STEPS{1000000};
   constexpr int PRINT_EVERY{50000};
@@ -226,18 +284,75 @@ int main() {
 
   std::cout << "-------------------------------------------------------------"
                "------------------------------------\n";
-}
 
-// PARTE GRAFICA
-#include <SFML>
+  //--------------------
 
-sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
-window.setFramerateLimit(60);
+  // PARTE GRAFICA
 
-sf::CircleShape particle(12.f);
-particle.setOrigin(12.f, 12.f);
-window.setOrigin(400.f, 300.f);
+  sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
+  window.setFramerateLimit(60);
 
-particle.setFillColor(sf::Color::Cyan);
+  bool Timeout{false};
 
-particle.setPosition(p.getPosition());
+  std::vector<sf::Color> palette = {sf::Color::Red, sf::Color::Yellow,
+                                    sf::Color::Green, sf::Color::Cyan};
+
+  while (window.isOpen()) {
+    sf::Event event;
+
+    // Events
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
+        window.close();
+      }
+
+      if (event.type == sf::Event::KeyPressed &&
+          event.key.code == sf::Keyboard::Space) {
+        Timeout = !Timeout;
+      }
+    }
+
+    // Step
+    if (!Timeout) {
+      for (int i{0}; i != 15; ++i) {
+        pf::step(system, cfg);
+      }  // serve farlo 15 volte perché il dt=1 ms mentre il frame
+    }
+
+    // Draw
+    window.clear(sf::Color::Black);
+
+    double sum_r{0.0};
+    for (const auto &p : system) {
+      sum_r += pf::norm(p.getPosition());
+    }
+    double mean_r{sum_r / system.size()};
+
+    float percentage{0.60f};
+    float target_radius{400.f * percentage};
+    float zoom{target_radius / static_cast<float>(mean_r)};
+
+    for (auto i = 0; i < system.size(); ++i) {
+      const auto &p{system[i]};
+
+      float radius{static_cast<float>(std::pow(p.getMass(), 1.0 / 5.0)) *
+                   0.05f};
+      if (radius < 3.f) radius = 3.f;
+      if (radius > 20.f) radius = 20.f;
+
+      sf::CircleShape particle(radius);
+      particle.setOrigin(radius, radius);
+
+      float X{400.f + static_cast<float>(p.getPosition().x) * zoom};
+      float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
+      particle.setPosition(X, Y);
+
+      particle.setFillColor(palette[i % palette.size()]);
+
+      window.draw(particle);
+    }
+
+    window.display();
+  }
+  return 0;
+};  // main
