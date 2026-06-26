@@ -1,0 +1,17 @@
+# ninja log v5
+6	1129	1782493791164573543	CMakeFiles/nbody.dir/Debug/main.cpp.o	a5f4e543d5175896
+1130	1237	1782493791268573533	Debug/nbody	aeb2e54be96514dd
+6	284	1782493790312573635	Debug/nbody.t	1d1ac177c800bb86
+6	9378	1782493574304601039	CMakeFiles/nbody.t.dir/Debug/system.test.cpp.o	728b825146c630af
+7	1331	1782493566284601949	CMakeFiles/nbody.t.dir/Debug/system.cpp.o	4225157530f1e863
+6	1329	1782493566284601949	CMakeFiles/nbody.dir/Debug/system.cpp.o	bdecc48f67a0f36c
+3	4447	1782493919024555840	CMakeFiles/nbody.t.dir/Debug/system.test.cpp.o	728b825146c630af
+4448	4627	1782493919216555816	Debug/nbody.t	1d1ac177c800bb86
+1	39	0	CMakeFiles/Debug/test.util	5c9be4b1fc145e7a
+2	518	1782493936188553655	CMakeFiles/nbody.dir/Release/system.cpp.o	b6957b01453bbeba
+3	519	1782493936188553655	CMakeFiles/nbody.t.dir/Release/system.cpp.o	c4ce68b4f247391e
+2	841	1782493936512553616	CMakeFiles/nbody.dir/Release/main.cpp.o	936067603fa526db
+841	947	1782493936616553603	Release/nbody	b5976f41a1b3b60f
+3	3676	1782493939344553275	CMakeFiles/nbody.t.dir/Release/system.test.cpp.o	a750fd2ad71af4b4
+3676	3765	1782493939432553264	Release/nbody.t	bc58d22a49c34a3
+2	23	0	CMakeFiles/Release/test.util	c0cbc802792470af

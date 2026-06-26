@@ -1,8 +1,6 @@
 #include "system.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <cmath>
-#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -20,37 +18,34 @@ Vec operator*(const Vec &v, double c) { return Vec{v.x * c, v.y * c}; }
 double norm2(const Vec &v) { return v.x * v.x + v.y * v.y; }
 double norm(const Vec &v) { return std::sqrt(norm2(v)); }
 
-class Particle {
- public:
-  Particle(Vec p, Vec v, double m)
-      : position_{p}, velocity_{v}, acceleration_{0., 0.}, mass_{m} {
-    if (mass_ <= 0.) {
-      throw std::invalid_argument{"mass must be positive"};
-    }
+Particle::Particle(Vec p, Vec v, double m)
+    : position_{p}, velocity_{v}, acceleration_{0., 0.}, mass_{m} {
+  if (mass_ <= 0.) {
+    throw std::invalid_argument{"mass must be positive"};
   }
+}
 
-  const Vec &getPosition() const { return position_; }
-  const Vec &getVelocity() const { return velocity_; }
-  const Vec &getAcceleration() const { return acceleration_; }
-  double getMass() const { return mass_; }
+const Vec &Particle::getPosition() const { return position_; }
+const Vec &Particle::getVelocity() const { return velocity_; }
+const Vec &Particle::getAcceleration() const { return acceleration_; }
+double Particle::getMass() const { return mass_; }
 
-  void setAcceleration(const Vec &a) { acceleration_ = a; }
+void Particle::setAcceleration(const Vec &a) { acceleration_ = a; }
 
-  void computePosition(const Config &cfg) {
-    position_ =
-        position_ + velocity_ * cfg.dt + acceleration_ * 0.5 * cfg.dt * cfg.dt;
-  }
+void Particle::computePosition(const Config &cfg) {
+  position_ =
+      position_ + velocity_ * cfg.dt + acceleration_ * 0.5 * cfg.dt * cfg.dt;
+}
 
-  void computeVelocity(const Vec &a_old, const Config &cfg) {
-    velocity_ = velocity_ + 0.5 * cfg.dt * (a_old + acceleration_);
-  }
+void Particle::computeVelocity(const Vec &a_old, const Config &cfg) {
+  velocity_ = velocity_ + 0.5 * cfg.dt * (a_old + acceleration_);
+}
 
-  Vec momentum() const { return velocity_ * mass_; }
+Vec Particle::momentum() const { return velocity_ * mass_; }
 
-  double angularMomentum() const {
-    return mass_ * ((position_.x * velocity_.y) - (position_.y * velocity_.x));
-  }
-};
+double Particle::angularMomentum() const {
+  return mass_ * (position_.x * velocity_.y - position_.y * velocity_.x);
+}
 
 Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg) {

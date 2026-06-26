@@ -43,30 +43,21 @@ class Particle {
 
   void computeVelocity(const Vec &a_old, const Config &cfg);
 
-  vc momentum() const;
+  Vec momentum() const;
 
   double angularMomentum() const;
+};
 
-  Vec accelerationContribution(const Particle &a, const Particle &b,
-                               const Config &cfg);
-
-  Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
-                        const Config &cfg);
-
-  void step(std::vector<Particle> &system, const Config &cfg);
-
-  double kineticEnergy(const std::vector<Particle> &system);
-
-  double potentialEnergy(const std::vector<Particle> &system,
-                         const Config &cfg);
-
-  double mechanicalEnergy(const std::vector<Particle> &system,
-                          const Config &cfg);
-
-  Vec totalMomentum(const std::vector<Particle> &system);
-
-  double totalAngularMomentum(const std::vector<Particle> &system);
-}
+Vec accelerationContribution(const Particle &a, const Particle &b,
+                             const Config &cfg);
+Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
+                      const Config &cfg);
+void step(std::vector<Particle> &system, const Config &cfg);
+double kineticEnergy(const std::vector<Particle> &system);
+double potentialEnergy(const std::vector<Particle> &system, const Config &cfg);
+double mechanicalEnergy(const std::vector<Particle> &system, const Config &cfg);
+Vec totalMomentum(const std::vector<Particle> &system);
+double totalAngularMomentum(const std::vector<Particle> &system);
 
 }  // namespace pf
 
