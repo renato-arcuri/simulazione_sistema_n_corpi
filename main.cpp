@@ -1,3 +1,5 @@
+#include <SFML/Graphics.hpp>
+#include <cmath>
 #include <exception>
 #include <iostream>
 
@@ -159,7 +161,7 @@ int main() {
       for (const auto &p : system) {
         sum_r += pf::norm(p.getPosition());
       }
-      double mean_r{sum_r / system.size()};
+      double mean_r{sum_r / static_cast<double>(system.size())};
 
       float percentage{0.60f};
       float target_rad{400.f * percentage};
@@ -209,7 +211,7 @@ int main() {
                "------------------------------------\n";
 
         std::cout.width(8);
-        std::cout << s;
+        std::cout << N_step;
         std::cout.width(15);
         std::cout << E_tot;
         std::cout.width(15);
@@ -220,13 +222,13 @@ int main() {
         std::cout << pf::norm(P);
         std::cout.width(15);
         std::cout << L << "\n";
+
+        std::cout
+            << "-------------------------------------------------------------"
+               "------------------------------------\n";
+
+        window.display();
       }
-
-      std::cout
-          << "-------------------------------------------------------------"
-             "------------------------------------\n";
-
-      window.display();
     }
   } catch (std::exception const &e) {
     std::cerr << e.what() << '\n';
