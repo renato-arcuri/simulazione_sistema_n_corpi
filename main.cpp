@@ -9,6 +9,11 @@ int main() {
   try {
     pf::Config cfg{};
 
+    // una riga del file deve essere fatto in questo modo(ogni riga è una
+    // particella): mass rx ry vx vy
+    const std::filesystem::path f{"..."};
+    std::vector<pf::Particle> system{read_from(f)};
+
     ////CONFIG INIZIALE (con questa non va...)
     // const double m1{2.0e24};
     // const double m2{1.0e17};
@@ -34,7 +39,6 @@ int main() {
 
     // SIMULAZIONE CON SISTEMA SOLARE RIDOTTO
 
-    std::vector<pf::Particle> system;
     // --- SOLE ---
     const double m1{6.56e11};
     const pf::Vec r1{0.0, 0.0};
@@ -108,7 +112,7 @@ int main() {
     // PARTE GRAFICA
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(60);  // 60 fps
 
     bool Timeout{false};
 
@@ -123,14 +127,35 @@ int main() {
       }
     }
 
-    for (std::size_t i{0}; i < system.size(); ++i) {
-      auto &p = system[i];
+    for (const auto &p : system) {
       float rad = static_cast<float>(std::pow(p.getMass() / p_min, 1.0 / 6.0));
-      if (rad < 2) {
-        rad = 2;
+      if (rad < 2.f) {
+        rad = 2.f;
       }
       radius.push_back(rad);
     }
+
+    std::cout << "-------------------------------------------------------------"
+                 "------------------------------------\n";
+
+    std::cout.setf(std::ios::scientific, std::ios::floatfield);
+    std::cout.precision(4);
+
+    std::cout.width(8);
+    std::cout << "Step";
+    std::cout.width(15);
+    std::cout << "E_tot";
+    std::cout.width(15);
+    std::cout << "Kinetic";
+    std::cout.width(15);
+    std::cout << "Potential";
+    std::cout.width(15);
+    std::cout << "P";
+    std::cout.width(15);
+    std::cout << "L_z" << "\n";
+
+    std::cout << "-------------------------------------------------------------"
+                 "------------------------------------\n";
 
     while (window.isOpen()) {
       sf::Event event;
@@ -151,7 +176,7 @@ int main() {
       if (Timeout == false) {
         for (int i{0}; i != 15; ++i) {
           pf::step(system, cfg);
-        }  // serve farlo 15 volte perché il dt=1 ms mentre il frame
+        }  // serve farlo 15 volte perché il dt=1 ms mentre il frame 15ms
       }
 
       // Draw
@@ -184,31 +209,8 @@ int main() {
 
       ++N_step;
 
-      if (N_step % 5000 == 0) {
+      if (N_step % 500 == 0) {
         std::cout << "\n";
-        std::cout
-            << "-------------------------------------------------------------"
-               "------------------------------------\n";
-
-        std::cout.setf(std::ios::scientific, std::ios::floatfield);
-        std::cout.precision(4);
-
-        std::cout.width(8);
-        std::cout << "Step";
-        std::cout.width(15);
-        std::cout << "E_tot";
-        std::cout.width(15);
-        std::cout << "Kinetic";
-        std::cout.width(15);
-        std::cout << "Potential";
-        std::cout.width(15);
-        std::cout << "P";
-        std::cout.width(15);
-        std::cout << "L_z" << "\n";
-
-        std::cout
-            << "-------------------------------------------------------------"
-               "------------------------------------\n";
 
         std::cout.width(8);
         std::cout << N_step;
@@ -223,13 +225,16 @@ int main() {
         std::cout.width(15);
         std::cout << L << "\n";
 
-        std::cout
-            << "-------------------------------------------------------------"
-               "------------------------------------\n";
-
-        window.display();
+        // std::cout
+        //     <<
+        //     "-------------------------------------------------------------"
+        //        "------------------------------------\n";
       }
-    }
+      window.display();
+    }  // game loop
+  } catch (std::filesystem::filesystem_error const &e) {
+    std::cerr << e.path1();
+    return EXIT_FAILURE;
   } catch (std::exception const &e) {
     std::cerr << e.what() << '\n';
     return EXIT_FAILURE;

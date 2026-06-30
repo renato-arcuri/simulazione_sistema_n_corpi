@@ -58,7 +58,7 @@ double potentialEnergy(const std::vector<Particle> &system, const Config &cfg);
 double mechanicalEnergy(const std::vector<Particle> &system, const Config &cfg);
 Vec totalMomentum(const std::vector<Particle> &system);
 double totalAngularMomentum(const std::vector<Particle> &system);
-
+auto read_from(std::filesystem::path const &p);
 }  // namespace pf
 
 #endif

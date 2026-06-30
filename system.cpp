@@ -120,4 +120,32 @@ double totalAngularMomentum(const std::vector<Particle> &system) {
   return L;
 }
 
+auto read_from(std::filesystem::path const &p) {
+  std::ifstream is(p);
+  if (!is) {
+    throw std::filesystem::filesystem_error{
+        "read_from", p, std::make_error_code(std::errc::invalid_argument)};
+  }
+
+  std::vector<Particle> particles;
+  double mass;
+  double rx;
+  double ry;
+  double vx;
+  double vy;
+
+  while (is >> mass >> rx >> ry >> vx >> vy) {
+    Vec position{rx, ry};
+    Vec velocity{vx, vy};
+
+    particles.push_back(position, velocity, mass);
+  }
+
+  if (!is.eof() && is.fail()) {
+    throw std::runtime_error("Reading from file error");
+  }
+
+  return particles;
+}
+
 }  // namespace pf
