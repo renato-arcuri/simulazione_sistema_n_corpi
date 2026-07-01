@@ -3,28 +3,53 @@
 
 #include "doctest.h"
 
-/*
 TEST_CASE("Vector operations") {
   pf::Vec v1{3., 4.};
   pf::Vec v2{1., 2.};
+  pf::Vec v3{0., 0.};
+  double a{3.};
+  double b{0.};
 
-  auto s = v1 + v2;
-  CHECK(s.x == doctest::Approx(4.));
-  CHECK(s.y == doctest::Approx(6.));
+  auto s = v1 + v2 + v3;
+  CHECK(s.x == 4.);
+  CHECK(s.y == 6.);
 
-  auto d = v1 - v2;
-  CHECK(d.x == doctest::Approx(2.));
-  CHECK(d.y == doctest::Approx(2.));
+  auto d = v1 - v2 - v3;
+  CHECK(d.x == 2.);
+  CHECK(d.y == 2.);
 
-  CHECK(pf::norm2(v1) == doctest::Approx(25.));
-  CHECK(pf::norm(v1) == doctest::Approx(5.));
+  CHECK(pf::norm2(v1) == 25.);
+  CHECK(pf::norm(v1) == 5.);
+  CHECK(pf::norm(v3) == 0.);
+
+  auto m1 = a * v1;
+  auto m2 = v1 * a;
+  auto m3 = b * v1;
+
+  CHECK(m1.x == 9.);
+  CHECK(m1.y == 12.);
+  CHECK(m2.x == 9.);
+  CHECK(m2.y == 12.);
+  CHECK(m3.x == 0.);
+  CHECK(m3.y == 0.);
 }
-TEST_CASE("Particle mass must be positive") {
+
+TEST_CASE("Particle members") {
   CHECK_THROWS_AS(pf::Particle({0., 0.}, {0., 0.}, 0.), std::invalid_argument);
-
   CHECK_THROWS_AS(pf::Particle({0., 0.}, {0., 0.}, -1.), std::invalid_argument);
-}
 
+  pf::Particle p{{1., 2.}, {3., 4.}, 5.};
+  pf::Vec a{1., 2.};
+
+  CHECK(p.getPosition().x == 1.);
+  CHECK(p.getPosition().y == 2.);
+  CHECK(p.getVelocity().x == 3.);
+  CHECK(p.getVelocity().y == 4.);
+  CHECK(p.setAcceleration(a));
+  CHECK(p.getAcceleration().x == 1.);
+  CHECK(p.getAcceleration().y == 2.);
+}
+/*
 TEST_CASE("Particle momentum") {
   pf::Particle p({0., 0.}, {2., 3.}, 4.);
 

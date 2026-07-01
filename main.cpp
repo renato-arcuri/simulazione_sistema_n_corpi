@@ -12,37 +12,22 @@ int main() {
 
     // una riga del file deve essere fatto in questo modo(ogni riga è una
     // particella): mass rx ry vx vy
-    const std::filesystem::path f{"./input/solar_system.txt"};
-    std::vector<pf::Particle> system{pf::read_from(f)};
-
-    ////CONFIG INIZIALE (con questa non va...)
-    // const double m1{2.0e24};
-    // const double m2{1.0e17};
-    // const double m3{1.0e13};
-
-    // const pf::Vec r1{0.0, 0.0};
-    // const pf::Vec r2{10.0, 0.0};
-    // const pf::Vec r3{10.7, 0.0};
-
-    // const pf::Vec v1{0.0, 0.0};
-    // const pf::Vec v2{0.0, 115.498};
-    // const pf::Vec v3{0.0, 115.498 + 2.58};
-
-    // std::vector<pf::Particle> system{{r1, v1, m1}, {r2, v2, m2}, {r3, v3,
-    // m3}};
+    // la prima riga inizia con @ e contiene i dati i configurazione, se non c'è
+    // vengono usati quelli di default
+    const std::filesystem::path f{"./input/figure8.txt"};
+    auto system{pf::read_from(f, cfg)};
 
     for (auto &p : system) {
       p.setAcceleration(pf::totalAcceleration(system, p, cfg));
     };
 
     int N_step{0};
-    double E_tot{pf::mechanicalEnergy(system, cfg)};
-    double K{pf::kineticEnergy(system)};
-    double U{pf::potentialEnergy(system, cfg)};
-    pf::Vec P{pf::totalMomentum(system)};
-    double L{pf::totalAngularMomentum(system)};
 
-    //--------------------
+    double E_tot{0.};
+    double K{0.};
+    double U{0.};
+    pf::Vec P{0., 0.};
+    double L{0.};
 
     // PARTE GRAFICA
 
@@ -51,8 +36,9 @@ int main() {
 
     bool Timeout{false};
 
-    std::vector<sf::Color> palette = {sf::Color::Red, sf::Color::Yellow,
-                                      sf::Color::Green, sf::Color::Cyan};
+    std::vector<sf::Color> palette = {sf::Color::Red,   sf::Color::Yellow,
+                                      sf::Color::Green, sf::Color::Cyan,
+                                      sf::Color::Blue,  sf::Color::Magenta};
     std::vector<float> radius;
 
     double p_min = system[0].getMass();
@@ -109,7 +95,7 @@ int main() {
 
       // Step
       if (Timeout == false) {
-        for (int i{0}; i != 60; ++i) {
+        for (int i{0}; i != 50; ++i) {
           pf::step(system, cfg);
         }  // più volte si itera più velocemente avverrà la simulazione
       }
@@ -117,30 +103,33 @@ int main() {
       // Draw
       window.clear(sf::Color::Black);
 
-      double sum_r{0.0};
-      for (const auto &p : system) {
-        sum_r += pf::norm(p.getPosition());
+      float zoom;
+      if (cfg.zoom > 0.) {
+        zoom = static_cast<float>(cfg.zoom);
+      } else {
+        double sum_r{0.0};
+        for (const auto &p : system) {
+          sum_r += pf::norm(p.getPosition());
+        }
+        double mean_r{sum_r / static_cast<double>(system.size())};
+        if (mean_r < 1e-6) {
+          mean_r = 1e-6;
+        }
+        constexpr float percentage{0.60f};
+        constexpr float target_rad{400.f * percentage};
+        zoom = target_rad / static_cast<float>(mean_r);
       }
-      double mean_r{sum_r / static_cast<double>(system.size())};
-
-      float percentage{0.60f};
-      float target_rad{400.f * percentage};
-      float zoom{target_rad / static_cast<float>(mean_r)};
-
-      // constexpr float zoom{200.f};
 
       for (std::size_t i = 0; i < system.size(); ++i) {
         const auto &p{system[i]};
 
-        sf::CircleShape particle(radius[i]);
-        particle.setOrigin(radius[i], radius[i]);
-
         float X{400.f + static_cast<float>(p.getPosition().x) * zoom};
         float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
+
+        sf::CircleShape particle(radius[i]);
+        particle.setOrigin(radius[i], radius[i]);
         particle.setPosition(X, Y);
-
         particle.setFillColor(palette[i % palette.size()]);
-
         window.draw(particle);
       }
 
@@ -148,6 +137,12 @@ int main() {
 
       if (N_step % 50 == 0) {
         std::cout << "\n";
+
+        E_tot = pf::mechanicalEnergy(system, cfg);
+        K = pf::kineticEnergy(system);
+        U = pf::potentialEnergy(system, cfg);
+        P = pf::totalMomentum(system);
+        L = pf::totalAngularMomentum(system);
 
         std::cout.width(8);
         std::cout << N_step;
