@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -30,6 +31,7 @@ const Vec &Particle::getPosition() const { return position_; }
 const Vec &Particle::getVelocity() const { return velocity_; }
 const Vec &Particle::getAcceleration() const { return acceleration_; }
 double Particle::getMass() const { return mass_; }
+double Particle::getRadius() const { return k_; }
 
 void Particle::setAcceleration(const Vec &a) { acceleration_ = a; }
 
@@ -67,6 +69,29 @@ Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
   return sum;
 }
 
+void manageCollisions(std::vector<Particle> &system) {
+  for (std::size_t i{0}; i < system.size(); ++i) {
+    for (std::size_t j{i + 1}; j < system.size(); ++j) {
+      double r{norm(system[i].getPosition() - system[j].getPosition())};
+      double r_min{system[i].getRadius() + system[j].getRadius()};
+
+      if (r <= r_min) {
+        double m_new{system[i].getMass() + system[j].getMass()};
+        Vec r_new{(system[i].getMass() * system[i].getPosition() +
+                   system[j].getMass() * system[j].getPosition()) *
+                  (1.0 / m_new)};
+        Vec v_new{(system[i].getMass() * system[i].getVelocity() +
+                   system[j].getMass() * system[j].getVelocity()) *
+                  (1.0 / m_new)};
+
+        system[i] = Particle{r_new, v_new, m_new};
+        system.erase(system.begin() + static_cast<long>(j));
+        --j;
+      }
+    }
+  }
+}
+
 void step(std::vector<Particle> &system, const Config &cfg) {
   for (auto &p : system) {
     p.computePosition(cfg);
@@ -77,6 +102,8 @@ void step(std::vector<Particle> &system, const Config &cfg) {
     p.setAcceleration(totalAcceleration(system, p, cfg));
     p.computeVelocity(a_old, cfg);
   }
+
+  manageCollisions(system);
 }
 
 double kineticEnergy(const std::vector<Particle> &system) {
@@ -121,7 +148,7 @@ double totalAngularMomentum(const std::vector<Particle> &system) {
   return L;
 }
 
-std::vector<Particle> read_from(std::filesystem::path const &p) {
+std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
   std::ifstream is(p);
   if (!is) {
     throw std::filesystem::filesystem_error{
@@ -129,21 +156,31 @@ std::vector<Particle> read_from(std::filesystem::path const &p) {
   }
 
   std::vector<Particle> particles;
-  double mass;
-  double rx;
-  double ry;
-  double vx;
-  double vy;
+  std::string line;
 
-  while (is >> mass >> rx >> ry >> vx >> vy) {
-    Vec position{rx, ry};
-    Vec velocity{vx, vy};
+  while (std::getline(is, line)) {
+    if (line.empty()) {
+      continue;
+    }
+    if (line[0] == '#') {
+      continue;
+    }
 
-    particles.push_back(Particle{position, velocity, mass});
+    if (line[0] == '@') {
+      std::istringstream ss(line.substr(1));
+      ss >> cfg.G >> cfg.zoom >> cfg.dt;
+    } else {
+      // riga di particella: mass rx ry vx vy
+      std::istringstream ss(line);
+      double mass, rx, ry, vx, vy;
+      if (ss >> mass >> rx >> ry >> vx >> vy) {
+        particles.push_back(Particle{{rx, ry}, {vx, vy}, mass});
+      }
+    }
   }
 
-  if (!is.eof() && is.fail()) {
-    throw std::runtime_error("Reading from file error");
+  if (particles.empty()) {
+    throw std::runtime_error{"no particles found in file"};
   }
 
   return particles;

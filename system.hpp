@@ -7,8 +7,11 @@
 namespace pf {
 
 struct Config {
-  const double G{6.67e-11};
-  const double dt{0.001};
+  // valori di default se non configurati diversamente nel file
+  double G{6.67e-11};
+  double zoom{0.};  // se è uguale a 0. lo zoom viene calcolato dalle posizioni
+  double dt{0.001};
+
   const double softening{1.e-12};
 };
 
@@ -29,7 +32,8 @@ class Particle {
   Vec position_;
   Vec velocity_;
   Vec acceleration_;
-  const double mass_;
+  double mass_;
+  double k_;
 
  public:
   Particle(Vec p, Vec v, double m);
@@ -37,6 +41,7 @@ class Particle {
   const Vec &getVelocity() const;
   const Vec &getAcceleration() const;
   double getMass() const;
+  double getRadius() const;
 
   void setAcceleration(const Vec &a);
 
@@ -53,13 +58,15 @@ Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg);
 Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
                       const Config &cfg);
+void manageCollisions(std::vector<Particle> &system);
 void step(std::vector<Particle> &system, const Config &cfg);
 double kineticEnergy(const std::vector<Particle> &system);
 double potentialEnergy(const std::vector<Particle> &system, const Config &cfg);
 double mechanicalEnergy(const std::vector<Particle> &system, const Config &cfg);
 Vec totalMomentum(const std::vector<Particle> &system);
 double totalAngularMomentum(const std::vector<Particle> &system);
-std::vector<Particle> read_from(std::filesystem::path const &p);
+std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg);
+
 }  // namespace pf
 
 #endif
