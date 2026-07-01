@@ -1,6 +1,7 @@
 #include "system.hpp"
 
 #include <cmath>
+#include <fstream>
 #include <stdexcept>
 #include <vector>
 
@@ -120,7 +121,7 @@ double totalAngularMomentum(const std::vector<Particle> &system) {
   return L;
 }
 
-auto read_from(std::filesystem::path const &p) {
+std::vector<Particle> read_from(std::filesystem::path const &p) {
   std::ifstream is(p);
   if (!is) {
     throw std::filesystem::filesystem_error{
@@ -138,7 +139,7 @@ auto read_from(std::filesystem::path const &p) {
     Vec position{rx, ry};
     Vec velocity{vx, vy};
 
-    particles.push_back(position, velocity, mass);
+    particles.push_back(Particle{position, velocity, mass});
   }
 
   if (!is.eof() && is.fail()) {
