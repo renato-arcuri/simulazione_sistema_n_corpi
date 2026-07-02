@@ -6,7 +6,7 @@
 
 #include "system.hpp"
 
-int main() {
+int main(int argc, char *argv[]) {
   try {
     pf::Config cfg{};
 
@@ -14,7 +14,12 @@ int main() {
     // particella): mass rx ry vx vy
     // la prima riga inizia con @ e contiene i dati i configurazione, se non c'è
     // vengono usati quelli di default
-    const std::filesystem::path f{"./input/figure8.txt"};
+    if (argc < 2) {
+      std::cerr << "Uso: " << argv[0] << " <percorso_file_input>\n";
+      return EXIT_FAILURE;
+    }
+
+    const std::filesystem::path f{argv[1]};
     auto system{pf::read_from(f, cfg)};
 
     for (auto &p : system) {
@@ -39,7 +44,8 @@ int main() {
     std::vector<sf::Color> palette = {sf::Color::Red,   sf::Color::Yellow,
                                       sf::Color::Green, sf::Color::Cyan,
                                       sf::Color::Blue,  sf::Color::Magenta};
-    std::vector<float> radius;
+
+    // std::vector<float> radius;
 
     double p_min = system[0].getMass();
     for (auto &p : system) {
@@ -48,12 +54,14 @@ int main() {
       }
     }
 
-    for (const auto &p : system) {
-      float rad = static_cast<float>(std::pow(p.getMass() / p_min, 1.0 / 6.0));
-      if (rad < 5.f) {
-        rad = 5.f;
-      }
-      radius.push_back(rad);
+    for (auto &p : system) {
+      float rad =
+          static_cast<float>(0.005 * std::pow(p.getMass() / p_min, 1.0 / 6.0));
+      // if (rad < 2.f) {
+      //   rad = 2.f;
+      // }
+      // radius.push_back(rad);
+      p.setRadius(rad);
     }
 
     std::cout << "-------------------------------------------------------------"
@@ -100,6 +108,25 @@ int main() {
         }  // più volte si itera più velocemente avverrà la simulazione
       }
 
+      /*
+      if (!system.empty()) {
+        double current_p_min = system[0].getMass();
+        for (const auto &p : system) {
+          if (p.getMass() < current_p_min) {
+            current_p_min = p.getMass();
+          }
+        }
+        for (auto &p : system) {
+          float rad = static_cast<float>(
+              std::pow(p.getMass() / current_p_min, 1.0 / 6.0));
+          if (rad < 5.f) {
+            rad = 5.f;
+          }
+          p.setRadius(rad);
+        }
+      }
+      */
+
       // Draw
       window.clear(sf::Color::Black);
 
@@ -126,9 +153,14 @@ int main() {
         float X{400.f + static_cast<float>(p.getPosition().x) * zoom};
         float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
 
-        sf::CircleShape particle(radius[i]);
-        particle.setOrigin(radius[i], radius[i]);
+        float current_radius = p.getRadius() * zoom;
+        if (current_radius < 3.5f) {
+          current_radius = 3.5f;
+        }
+        sf::CircleShape particle(current_radius);
+        particle.setOrigin(current_radius, current_radius);
         particle.setPosition(X, Y);
+
         particle.setFillColor(palette[i % palette.size()]);
         window.draw(particle);
       }
@@ -174,5 +206,4 @@ int main() {
     std::cerr << "unknown exception\n";
     return EXIT_FAILURE;
   }
-
 };  // main

@@ -45,7 +45,7 @@ TEST_CASE("Particle members") {
   CHECK(p.getPosition().y == 2.);
   CHECK(p.getVelocity().x == 3.);
   CHECK(p.getVelocity().y == 4.);
-  CHECK(p.setAcceleration(a));
+  p.setAcceleration(a);
   CHECK(p.getAcceleration().x == 1.);
   CHECK(p.getAcceleration().y == 2.);
 }

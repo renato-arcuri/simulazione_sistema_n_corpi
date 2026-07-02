@@ -33,7 +33,7 @@ class Particle {
   Vec velocity_;
   Vec acceleration_;
   double mass_;
-  double k_;
+  float k_;
 
  public:
   Particle(Vec p, Vec v, double m);
@@ -41,9 +41,10 @@ class Particle {
   const Vec &getVelocity() const;
   const Vec &getAcceleration() const;
   double getMass() const;
-  double getRadius() const;
+  float getRadius() const;
 
   void setAcceleration(const Vec &a);
+  void setRadius(const float &k);
 
   void computePosition(const Config &cfg);
 

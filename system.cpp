@@ -31,9 +31,10 @@ const Vec &Particle::getPosition() const { return position_; }
 const Vec &Particle::getVelocity() const { return velocity_; }
 const Vec &Particle::getAcceleration() const { return acceleration_; }
 double Particle::getMass() const { return mass_; }
-double Particle::getRadius() const { return k_; }
+float Particle::getRadius() const { return k_; }
 
 void Particle::setAcceleration(const Vec &a) { acceleration_ = a; }
+void Particle::setRadius(const float &k) { k_ = k; }
 
 void Particle::computePosition(const Config &cfg) {
   position_ =
@@ -73,7 +74,8 @@ void manageCollisions(std::vector<Particle> &system) {
   for (std::size_t i{0}; i < system.size(); ++i) {
     for (std::size_t j{i + 1}; j < system.size(); ++j) {
       double r{norm(system[i].getPosition() - system[j].getPosition())};
-      double r_min{system[i].getRadius() + system[j].getRadius()};
+      double r_min =
+          static_cast<double>(system[i].getRadius() + system[j].getRadius());
 
       if (r <= r_min) {
         double m_new{system[i].getMass() + system[j].getMass()};
@@ -84,7 +86,13 @@ void manageCollisions(std::vector<Particle> &system) {
                    system[j].getMass() * system[j].getVelocity()) *
                   (1.0 / m_new)};
 
+        float rad_new =
+            std::sqrt(system[i].getRadius() * system[i].getRadius() +
+                      system[j].getRadius() * system[j].getRadius());
+
         system[i] = Particle{r_new, v_new, m_new};
+        system[i].setRadius(rad_new);
+
         system.erase(system.begin() + static_cast<long>(j));
         --j;
       }
