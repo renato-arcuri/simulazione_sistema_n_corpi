@@ -55,8 +55,8 @@ Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg) {
   Vec r{b.getPosition() - a.getPosition()};
   double r2{norm2(r) + cfg.softening * cfg.softening};
-  double denom{r2 * std::sqrt(r2)};
-  return (cfg.G * b.getMass() / denom) * r;
+  double inv_denom{1.0 / (r2 * std::sqrt(r2))};
+  return (cfg.G * b.getMass() * inv_denom) * r;
 }
 
 Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
@@ -128,8 +128,8 @@ double potentialEnergy(const std::vector<Particle> &system, const Config &cfg) {
   for (std::size_t i{0}; i < N; ++i) {
     for (std::size_t j{i + 1}; j < N; ++j) {
       Vec r{system[j].getPosition() - system[i].getPosition()};
-      double d{norm(r)};
-      U += cfg.G * system[i].getMass() * system[j].getMass() / d;
+      double inv_d{1.0 / norm(r)};
+      U += cfg.G * system[i].getMass() * system[j].getMass() * inv_d;
     }
   }
   return -U;
