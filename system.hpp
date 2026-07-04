@@ -9,10 +9,9 @@ namespace pf {
 struct Config {
   // valori di default se non configurati diversamente nel file
   double G{6.67e-11};
-  double zoom{0.};  // se è uguale a 0. lo zoom viene calcolato dalle posizioni
+  double zoom{0.};
   double dt{0.001};
-
-  const double softening{1.e-12};
+  int speed{17};
 };
 
 struct Vec {

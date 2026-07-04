@@ -54,8 +54,7 @@ double Particle::angularMomentum() const {
 Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg) {
   Vec r{b.getPosition() - a.getPosition()};
-  double r2{norm2(r) + cfg.softening * cfg.softening};
-  double inv_denom{1.0 / (r2 * std::sqrt(r2))};
+  double inv_denom{1.0 / (norm2(r) * std::sqrt(r))};
   return (cfg.G * b.getMass() * inv_denom) * r;
 }
 
@@ -176,7 +175,7 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
 
     if (line[0] == '@') {
       std::istringstream ss(line.substr(1));
-      ss >> cfg.G >> cfg.zoom >> cfg.dt;
+      ss >> cfg.G >> cfg.zoom >> cfg.dt >> cfg.speed;
     } else {
       // riga di particella: mass rx ry vx vy
       std::istringstream ss(line);

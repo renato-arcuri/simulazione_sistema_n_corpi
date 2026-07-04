@@ -49,18 +49,13 @@ int main(int argc, char *argv[]) {
 
     double p_min = system[0].getMass();
     for (auto &p : system) {
-      if (p.getMass() < p_min) {
+      if (p.getMass() < p_min) {  // !!!!!!!!!!!!!!!!!!!!! da cambiare
         p_min = p.getMass();
       }
     }
 
     for (auto &p : system) {
-      float rad =
-          static_cast<float>(0.005 * std::pow(p.getMass() / p_min, 1.0 / 6.0));
-      // if (rad < 2.f) {
-      //   rad = 2.f;
-      // }
-      // radius.push_back(rad);
+      float rad = static_cast<float>(2 + std::log10(10 * p.getMass() / p_min));
       p.setRadius(rad);
     }
 
@@ -103,8 +98,9 @@ int main(int argc, char *argv[]) {
 
       // Step
       if (Timeout == false) {
-        for (int i{0}; i != 50; ++i) {
+        for (int i{0}; i != cfg.speed; ++i) {
           pf::step(system, cfg);
+          ++N_step;
         }  // più volte si itera più velocemente avverrà la simulazione
       }
 
@@ -118,7 +114,7 @@ int main(int argc, char *argv[]) {
         }
         for (auto &p : system) {
           float rad = static_cast<float>(
-              std::pow(p.getMass() / current_p_min, 1.0 / 6.0));
+              (p.getMass() / current_p_min, 10.0));
           if (rad < 5.f) {
             rad = 5.f;
           }
@@ -131,20 +127,19 @@ int main(int argc, char *argv[]) {
       window.clear(sf::Color::Black);
 
       float zoom;
-      if (cfg.zoom > 0.) {
+      if (cfg.zoom != 0) {
         zoom = static_cast<float>(cfg.zoom);
       } else {
-        double sum_r{0.0};
+        double sum_d{0.0};
         for (const auto &p : system) {
-          sum_r += pf::norm(p.getPosition());
+          sum_d += pf::norm(p.getPosition());
         }
-        double mean_r{sum_r / static_cast<double>(system.size())};
-        if (mean_r < 1e-6) {
-          mean_r = 1e-6;
+        double mean_d{sum_d / static_cast<double>(system.size())};
+        if (mean_d < 1e-6) {
+          mean_d = 1e-6;
         }
-        constexpr float percentage{0.60f};
-        constexpr float target_rad{400.f * percentage};
-        zoom = target_rad / static_cast<float>(mean_r);
+
+        zoom = 50.f / static_cast<float>(mean_d);
       }
 
       for (std::size_t i = 0; i < system.size(); ++i) {
@@ -154,8 +149,8 @@ int main(int argc, char *argv[]) {
         float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
 
         float current_radius = p.getRadius() * zoom;
-        if (current_radius < 3.5f) {
-          current_radius = 3.5f;
+        if (current_radius < 3.f) {
+          current_radius = 3.f;
         }
         sf::CircleShape particle(current_radius);
         particle.setOrigin(current_radius, current_radius);
@@ -165,9 +160,7 @@ int main(int argc, char *argv[]) {
         window.draw(particle);
       }
 
-      ++N_step;
-
-      if (N_step % 50 == 0) {
+      if (N_step % cfg.speed == 0) {
         std::cout << "\n";
 
         E_tot = pf::mechanicalEnergy(system, cfg);

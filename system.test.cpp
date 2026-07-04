@@ -49,20 +49,29 @@ TEST_CASE("Particle members") {
   CHECK(p.getAcceleration().x == 1.);
   CHECK(p.getAcceleration().y == 2.);
 }
-/*
+
 TEST_CASE("Particle momentum") {
-  pf::Particle p({0., 0.}, {2., 3.}, 4.);
+  pf::Particle p1({0., 0.}, {2., 3.}, 4.);
+  auto mom = p1.momentum();
 
-  auto mom = p.momentum();
+  CHECK(mom.x == 8);
+  CHECK(mom.y == 12.);
 
-  CHECK(mom.x == doctest::Approx(8.));
-  CHECK(mom.y == doctest::Approx(12.));
+  pf::Particle p2({-34., 2.}, {0., -2.}, 2.);
+  auto mom = p2.momentum();
+
+  CHECK(mom.x == 0.);
+  CHECK(mom.y == -4);
 }
 TEST_CASE("Angular momentum") {
-  pf::Particle p({1., 0.}, {0., 2.}, 3.);
-
-  CHECK(p.angularMomentum() == doctest::Approx(6.));
+  pf::Particle p1({1., 0.}, {0., 2.}, 3.);
+  CHECK(p1.angularMomentum() == doctest::Approx(6.));
+  
+  pf::Particle p2({1., 0.}, {-1., 0.}, 2.);
+  CHECK(p2.angularMomentum() == doctest::approx(0.));
 }
+
+/*
 TEST_CASE("Acceleration contribution") {
   pf::Config cfg;
 
