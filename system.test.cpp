@@ -107,50 +107,6 @@ TEST_CASE("Total acceleration") {
   CHECK(a.y == doctest::Approx(13.34));
 }
 
-TEST_CASE("Kinetic energy") {
-  std::vector<pf::Particle> sys{{{-2., 3.}, {3., 4.}, 2.}};
-
-  CHECK(pf::kineticEnergy(sys) == doctest::Approx(25.));
-}
-
-TEST_CASE("Potential energy") {
-  pf::Config cfg;
-
-  std::vector<pf::Particle> sys{{{0., 3.}, {2., 0.}, 2e11},
-                                {{4., 0.}, {3., 1.}, 5.}};
-
-  CHECK(pf::potentialEnergy(sys, cfg) == doctest::Approx(-13.34));
-}
-
-TEST_CASE("Total Momentum") {
-  std::vector<pf::Particle> sys{{{0., 0.}, {1., 0.}, 2.},
-                                {{0., 0.}, {-1., 0.}, 2.}};
-
-  auto P = pf::totalMomentum(sys);
-
-  CHECK(P.x == doctest::Approx(0.));
-  CHECK(P.y == doctest::Approx(0.));
-
-  std::vector<pf::Particle> sys2{{{2., 0.}, {1., 0.}, 2.},
-                                 {{0., 1.}, {-1., 0.}, 2.}};
-
-  auto P2 = pf::totalMomentum(sys2);
-  CHECK(P2.x == doctest::Approx(2.));
-  CHECK(P2.y == doctest::Approx(0.));
-}
-
-TEST_CASE("Total Angular momentum") {
-  pf::Config cfg;
-  cfg.G = 1.;
-  cfg.dt = 0.01;
-  std::vector<pf::Particle> system;
-
-  system.push_back(pf::Particle{{1.0, 0.0}, {0.0, 1.0}, 2.0});
-  system.push_back(pf::Particle{{-1.0, 0.0}, {0.0, -1.0}, 2.0});
-
-  CHECK(pf::totalAngularMomentum(system) == doctest::Approx(4.0));
-}
-
 TEST_CASE("Free particle motion: computePosition(),setAcceleration()") {
   pf::Config cfg;
   pf::Particle p({0., 0.}, {2000., 3000.}, 1.);
@@ -164,7 +120,7 @@ TEST_CASE("Free particle motion: computePosition(),setAcceleration()") {
   CHECK(p.getAcceleration().y == 0.0);
 }
 
-TEST_CASE("Velocity Verlet: step(),computeVelocity()") {
+TEST_CASE("Velocity Verlet: step()") {
   pf::Config cfg;
   std::vector<pf::Particle> system;
 
@@ -230,7 +186,53 @@ TEST_CASE("Manage Collisions: OVERLAP") {
   CHECK(system.size() == static_cast<size_t>(1));
 }
 
-TEST_CASE(" Input ") {
+TEST_CASE("Conserved quantities") {
+  SUBCASE("Kinetic energy") {
+    std::vector<pf::Particle> sys{{{-2., 3.}, {3., 4.}, 2.}};
+
+    CHECK(pf::kineticEnergy(sys) == doctest::Approx(25.));
+  }
+
+  SUBCASE("Potential energy") {
+    pf::Config cfg;
+
+    std::vector<pf::Particle> sys{{{0., 3.}, {2., 0.}, 2e11},
+                                  {{4., 0.}, {3., 1.}, 5.}};
+
+    CHECK(pf::potentialEnergy(sys, cfg) == doctest::Approx(-13.34));
+  }
+
+  SUBCASE("Total Momentum") {
+    std::vector<pf::Particle> sys{{{0., 0.}, {1., 0.}, 2.},
+                                  {{0., 0.}, {-1., 0.}, 2.}};
+
+    auto P = pf::totalMomentum(sys);
+
+    CHECK(P.x == doctest::Approx(0.));
+    CHECK(P.y == doctest::Approx(0.));
+
+    std::vector<pf::Particle> sys2{{{2., 0.}, {1., 0.}, 2.},
+                                   {{0., 1.}, {-1., 0.}, 2.}};
+
+    auto P2 = pf::totalMomentum(sys2);
+    CHECK(P2.x == doctest::Approx(2.));
+    CHECK(P2.y == doctest::Approx(0.));
+  }
+
+  SUBCASE("Total Angular momentum") {
+    pf::Config cfg;
+    cfg.G = 1.;
+    cfg.dt = 0.01;
+    std::vector<pf::Particle> system;
+
+    system.push_back(pf::Particle{{1.0, 0.0}, {0.0, 1.0}, 2.0});
+    system.push_back(pf::Particle{{-1.0, 0.0}, {0.0, -1.0}, 2.0});
+
+    CHECK(pf::totalAngularMomentum(system) == doctest::Approx(4.0));
+  }
+}
+
+TEST_CASE(" Input: read_from() ") {
   SUBCASE(" non-existent file ") {
     pf::Config cfg;
     CHECK_THROWS_AS(pf::read_from("non-existent_file.txt", cfg),
@@ -295,7 +297,7 @@ TEST_CASE(" Input ") {
 
   SUBCASE(" STD ") {
     pf::Config cfg;
-    cfg.dt = 300.0; 
+    cfg.dt = 300.0;
     cfg.G = 1.0;
     std::string const path{"file.txt"};
     {
@@ -322,7 +324,7 @@ TEST_CASE(" Input ") {
     std::filesystem::remove(path);
   }
 
-  SUBCASE(" negative mass") {
+  SUBCASE("Negative mass") {
     pf::Config cfg;
     std::string const path{"file.txt"};
     {
