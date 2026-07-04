@@ -70,7 +70,7 @@ build nbody.t: phony RelWithDebInfo/nbody.t
 
 
 #############################################
-# Folder: /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build
+# Folder: /home/renato/pf_labs/simulazione_sistema_n_corpi/build
 
 build all: phony all$:RelWithDebInfo
 

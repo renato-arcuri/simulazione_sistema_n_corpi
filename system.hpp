@@ -46,11 +46,9 @@ class Particle {
   void setRadius(const float &k);
 
   void computePosition(const Config &cfg);
-
   void computeVelocity(const Vec &a_old, const Config &cfg);
 
   Vec momentum() const;
-
   double angularMomentum() const;
 };
 

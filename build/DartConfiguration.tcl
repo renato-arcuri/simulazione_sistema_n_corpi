@@ -4,14 +4,14 @@
 
 
 # Configuration directories and files
-SourceDirectory: /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi
-BuildDirectory: /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build
+SourceDirectory: /home/renato/pf_labs/simulazione_sistema_n_corpi
+BuildDirectory: /home/renato/pf_labs/simulazione_sistema_n_corpi/build
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: HP-Spectre-x360
+Site: LAPTOP-MR9LF372
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
 BuildName: Linux-c++
@@ -27,7 +27,7 @@ SubmitInactivityTimeout:
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/bin/cmake" "/home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi"
+ConfigureCommand: "/usr/bin/cmake" "/home/renato/pf_labs/simulazione_sistema_n_corpi"
 MakeCommand: /usr/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 

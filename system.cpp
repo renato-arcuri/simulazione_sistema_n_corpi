@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <fstream>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -70,15 +71,28 @@ Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
 }
 
 void computeRadius(std::vector<Particle> &system) {
-  double p_min = system[0].getMass();
-  for (auto &p : system) {
-    if (p.getMass() < p_min) {
-      p_min = p.getMass();
+  double min_dist{std::numeric_limits<double>::max()};
+  for (std::size_t i{0}; i < system.size(); ++i) {
+    for (std::size_t j{i + 1}; j < system.size(); ++j) {
+      double d{norm(system[i].getPosition() - system[j].getPosition())};
+      if (d < min_dist) {
+        min_dist = d;
+      }
+    }
+  }
+
+  double max_radius{min_dist * 0.1};
+
+  double m_max{system[0].getMass()};
+  for (const auto &p : system) {
+    if (p.getMass() > m_max) {
+      m_max = p.getMass();
     }
   }
 
   for (auto &p : system) {
-    float rad = static_cast<float>(2 + std::log10(10 * p.getMass() / p_min));
+    double ratio{std::cbrt(p.getMass() / m_max)};
+    float rad{static_cast<float>(max_radius * ratio)};
     p.setRadius(rad);
   }
 }
@@ -206,5 +220,4 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
 
   return particles;
 }
-
 }  // namespace pf

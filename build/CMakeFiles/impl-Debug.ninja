@@ -211,19 +211,23 @@ build ContinuousSubmit$:Debug: phony CMakeFiles/ContinuousSubmit-Debug
 
 build cmake_object_order_depends_target_nbody_DEBUG: phony || CMakeFiles/nbody.dir
 
-build CMakeFiles/nbody.dir/Debug/main.cpp.o: CXX_COMPILER__nbody_unscanned_Debug /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/main.cpp || cmake_object_order_depends_target_nbody_DEBUG
+build CMakeFiles/nbody.dir/Debug/main.cpp.o: CXX_COMPILER__nbody_unscanned_Debug /home/renato/pf_labs/simulazione_sistema_n_corpi/main.cpp || cmake_object_order_depends_target_nbody_DEBUG
   DEFINES = -DCMAKE_INTDIR=\"Debug\"
   DEP_FILE = CMakeFiles/nbody.dir/Debug/main.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
   OBJECT_DIR = CMakeFiles/nbody.dir/Debug
   OBJECT_FILE_DIR = CMakeFiles/nbody.dir/Debug
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.dir/Debug/
+  TARGET_PDB = Debug/nbody.pdb
 
-build CMakeFiles/nbody.dir/Debug/system.cpp.o: CXX_COMPILER__nbody_unscanned_Debug /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/system.cpp || cmake_object_order_depends_target_nbody_DEBUG
+build CMakeFiles/nbody.dir/Debug/system.cpp.o: CXX_COMPILER__nbody_unscanned_Debug /home/renato/pf_labs/simulazione_sistema_n_corpi/system.cpp || cmake_object_order_depends_target_nbody_DEBUG
   DEFINES = -DCMAKE_INTDIR=\"Debug\"
   DEP_FILE = CMakeFiles/nbody.dir/Debug/system.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
   OBJECT_DIR = CMakeFiles/nbody.dir/Debug
   OBJECT_FILE_DIR = CMakeFiles/nbody.dir/Debug
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.dir/Debug/
+  TARGET_PDB = Debug/nbody.pdb
 
 
 # =============================================================================
@@ -240,8 +244,9 @@ build Debug/nbody: CXX_EXECUTABLE_LINKER__nbody_Debug CMakeFiles/nbody.dir/Debug
   OBJECT_DIR = CMakeFiles/nbody.dir/Debug
   POST_BUILD = :
   PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.dir/Debug/
   TARGET_FILE = Debug/nbody
-  TARGET_PDB = nbody.dbg
+  TARGET_PDB = Debug/nbody.pdb
 
 # =============================================================================
 # Object build statements for EXECUTABLE target nbody.t
@@ -252,19 +257,23 @@ build Debug/nbody: CXX_EXECUTABLE_LINKER__nbody_Debug CMakeFiles/nbody.dir/Debug
 
 build cmake_object_order_depends_target_nbody.t_DEBUG: phony || CMakeFiles/nbody.t.dir
 
-build CMakeFiles/nbody.t.dir/Debug/system.test.cpp.o: CXX_COMPILER__nbody.2et_unscanned_Debug /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/system.test.cpp || cmake_object_order_depends_target_nbody.t_DEBUG
+build CMakeFiles/nbody.t.dir/Debug/system.test.cpp.o: CXX_COMPILER__nbody.2et_unscanned_Debug /home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp || cmake_object_order_depends_target_nbody.t_DEBUG
   DEFINES = -DCMAKE_INTDIR=\"Debug\"
   DEP_FILE = CMakeFiles/nbody.t.dir/Debug/system.test.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
   OBJECT_DIR = CMakeFiles/nbody.t.dir/Debug
   OBJECT_FILE_DIR = CMakeFiles/nbody.t.dir/Debug
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.t.dir/Debug/
+  TARGET_PDB = Debug/nbody.t.pdb
 
-build CMakeFiles/nbody.t.dir/Debug/system.cpp.o: CXX_COMPILER__nbody.2et_unscanned_Debug /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/system.cpp || cmake_object_order_depends_target_nbody.t_DEBUG
+build CMakeFiles/nbody.t.dir/Debug/system.cpp.o: CXX_COMPILER__nbody.2et_unscanned_Debug /home/renato/pf_labs/simulazione_sistema_n_corpi/system.cpp || cmake_object_order_depends_target_nbody.t_DEBUG
   DEFINES = -DCMAKE_INTDIR=\"Debug\"
   DEP_FILE = CMakeFiles/nbody.t.dir/Debug/system.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
   OBJECT_DIR = CMakeFiles/nbody.t.dir/Debug
   OBJECT_FILE_DIR = CMakeFiles/nbody.t.dir/Debug
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.t.dir/Debug/
+  TARGET_PDB = Debug/nbody.t.pdb
 
 
 # =============================================================================
@@ -281,15 +290,16 @@ build Debug/nbody.t: CXX_EXECUTABLE_LINKER__nbody.2et_Debug CMakeFiles/nbody.t.d
   OBJECT_DIR = CMakeFiles/nbody.t.dir/Debug
   POST_BUILD = :
   PRE_LINK = :
+  TARGET_COMPILE_PDB = CMakeFiles/nbody.t.dir/Debug/
   TARGET_FILE = Debug/nbody.t
-  TARGET_PDB = nbody.t.dbg
+  TARGET_PDB = Debug/nbody.t.pdb
 
 
 #############################################
 # Custom command for CMakeFiles/Experimental-Debug
 
 build CMakeFiles/Experimental-Debug | ${cmake_ninja_workdir}CMakeFiles/Experimental-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Experimental
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Experimental
   pool = console
 
 
@@ -297,7 +307,7 @@ build CMakeFiles/Experimental-Debug | ${cmake_ninja_workdir}CMakeFiles/Experimen
 # Custom command for CMakeFiles/Nightly-Debug
 
 build CMakeFiles/Nightly-Debug | ${cmake_ninja_workdir}CMakeFiles/Nightly-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Nightly
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Nightly
   pool = console
 
 
@@ -305,7 +315,7 @@ build CMakeFiles/Nightly-Debug | ${cmake_ninja_workdir}CMakeFiles/Nightly-Debug:
 # Custom command for CMakeFiles/Continuous-Debug
 
 build CMakeFiles/Continuous-Debug | ${cmake_ninja_workdir}CMakeFiles/Continuous-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Continuous
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D Continuous
   pool = console
 
 
@@ -313,7 +323,7 @@ build CMakeFiles/Continuous-Debug | ${cmake_ninja_workdir}CMakeFiles/Continuous-
 # Custom command for CMakeFiles/NightlyMemoryCheck-Debug
 
 build CMakeFiles/NightlyMemoryCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyMemoryCheck-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyMemoryCheck
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyMemoryCheck
   pool = console
 
 
@@ -321,7 +331,7 @@ build CMakeFiles/NightlyMemoryCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/Nig
 # Custom command for CMakeFiles/NightlyStart-Debug
 
 build CMakeFiles/NightlyStart-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyStart-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyStart
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyStart
   pool = console
 
 
@@ -329,7 +339,7 @@ build CMakeFiles/NightlyStart-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlySt
 # Custom command for CMakeFiles/NightlyUpdate-Debug
 
 build CMakeFiles/NightlyUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyUpdate-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyUpdate
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyUpdate
   pool = console
 
 
@@ -337,7 +347,7 @@ build CMakeFiles/NightlyUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyU
 # Custom command for CMakeFiles/NightlyConfigure-Debug
 
 build CMakeFiles/NightlyConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyConfigure-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyConfigure
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyConfigure
   pool = console
 
 
@@ -345,7 +355,7 @@ build CMakeFiles/NightlyConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/Night
 # Custom command for CMakeFiles/NightlyBuild-Debug
 
 build CMakeFiles/NightlyBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyBuild-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyBuild
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyBuild
   pool = console
 
 
@@ -353,7 +363,7 @@ build CMakeFiles/NightlyBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyBu
 # Custom command for CMakeFiles/NightlyTest-Debug
 
 build CMakeFiles/NightlyTest-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyTest-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyTest
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyTest
   pool = console
 
 
@@ -361,7 +371,7 @@ build CMakeFiles/NightlyTest-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyTes
 # Custom command for CMakeFiles/NightlyCoverage-Debug
 
 build CMakeFiles/NightlyCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyCoverage-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyCoverage
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyCoverage
   pool = console
 
 
@@ -369,7 +379,7 @@ build CMakeFiles/NightlyCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/Nightl
 # Custom command for CMakeFiles/NightlyMemCheck-Debug
 
 build CMakeFiles/NightlyMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyMemCheck-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyMemCheck
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlyMemCheck
   pool = console
 
 
@@ -377,7 +387,7 @@ build CMakeFiles/NightlyMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/Nightl
 # Custom command for CMakeFiles/NightlySubmit-Debug
 
 build CMakeFiles/NightlySubmit-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlySubmit-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlySubmit
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D NightlySubmit
   pool = console
 
 
@@ -385,7 +395,7 @@ build CMakeFiles/NightlySubmit-Debug | ${cmake_ninja_workdir}CMakeFiles/NightlyS
 # Custom command for CMakeFiles/ExperimentalStart-Debug
 
 build CMakeFiles/ExperimentalStart-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalStart-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalStart
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalStart
   pool = console
 
 
@@ -393,7 +403,7 @@ build CMakeFiles/ExperimentalStart-Debug | ${cmake_ninja_workdir}CMakeFiles/Expe
 # Custom command for CMakeFiles/ExperimentalUpdate-Debug
 
 build CMakeFiles/ExperimentalUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalUpdate-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalUpdate
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalUpdate
   pool = console
 
 
@@ -401,7 +411,7 @@ build CMakeFiles/ExperimentalUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/Exp
 # Custom command for CMakeFiles/ExperimentalConfigure-Debug
 
 build CMakeFiles/ExperimentalConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalConfigure-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalConfigure
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalConfigure
   pool = console
 
 
@@ -409,7 +419,7 @@ build CMakeFiles/ExperimentalConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/
 # Custom command for CMakeFiles/ExperimentalBuild-Debug
 
 build CMakeFiles/ExperimentalBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalBuild-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalBuild
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalBuild
   pool = console
 
 
@@ -417,7 +427,7 @@ build CMakeFiles/ExperimentalBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/Expe
 # Custom command for CMakeFiles/ExperimentalTest-Debug
 
 build CMakeFiles/ExperimentalTest-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalTest-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalTest
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalTest
   pool = console
 
 
@@ -425,7 +435,7 @@ build CMakeFiles/ExperimentalTest-Debug | ${cmake_ninja_workdir}CMakeFiles/Exper
 # Custom command for CMakeFiles/ExperimentalCoverage-Debug
 
 build CMakeFiles/ExperimentalCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalCoverage-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalCoverage
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalCoverage
   pool = console
 
 
@@ -433,7 +443,7 @@ build CMakeFiles/ExperimentalCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/E
 # Custom command for CMakeFiles/ExperimentalMemCheck-Debug
 
 build CMakeFiles/ExperimentalMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalMemCheck-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalMemCheck
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalMemCheck
   pool = console
 
 
@@ -441,7 +451,7 @@ build CMakeFiles/ExperimentalMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/E
 # Custom command for CMakeFiles/ExperimentalSubmit-Debug
 
 build CMakeFiles/ExperimentalSubmit-Debug | ${cmake_ninja_workdir}CMakeFiles/ExperimentalSubmit-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalSubmit
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ExperimentalSubmit
   pool = console
 
 
@@ -449,7 +459,7 @@ build CMakeFiles/ExperimentalSubmit-Debug | ${cmake_ninja_workdir}CMakeFiles/Exp
 # Custom command for CMakeFiles/ContinuousStart-Debug
 
 build CMakeFiles/ContinuousStart-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousStart-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousStart
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousStart
   pool = console
 
 
@@ -457,7 +467,7 @@ build CMakeFiles/ContinuousStart-Debug | ${cmake_ninja_workdir}CMakeFiles/Contin
 # Custom command for CMakeFiles/ContinuousUpdate-Debug
 
 build CMakeFiles/ContinuousUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousUpdate-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousUpdate
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousUpdate
   pool = console
 
 
@@ -465,7 +475,7 @@ build CMakeFiles/ContinuousUpdate-Debug | ${cmake_ninja_workdir}CMakeFiles/Conti
 # Custom command for CMakeFiles/ContinuousConfigure-Debug
 
 build CMakeFiles/ContinuousConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousConfigure-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousConfigure
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousConfigure
   pool = console
 
 
@@ -473,7 +483,7 @@ build CMakeFiles/ContinuousConfigure-Debug | ${cmake_ninja_workdir}CMakeFiles/Co
 # Custom command for CMakeFiles/ContinuousBuild-Debug
 
 build CMakeFiles/ContinuousBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousBuild-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousBuild
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousBuild
   pool = console
 
 
@@ -481,7 +491,7 @@ build CMakeFiles/ContinuousBuild-Debug | ${cmake_ninja_workdir}CMakeFiles/Contin
 # Custom command for CMakeFiles/ContinuousTest-Debug
 
 build CMakeFiles/ContinuousTest-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousTest-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousTest
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousTest
   pool = console
 
 
@@ -489,7 +499,7 @@ build CMakeFiles/ContinuousTest-Debug | ${cmake_ninja_workdir}CMakeFiles/Continu
 # Custom command for CMakeFiles/ContinuousCoverage-Debug
 
 build CMakeFiles/ContinuousCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousCoverage-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousCoverage
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousCoverage
   pool = console
 
 
@@ -497,7 +507,7 @@ build CMakeFiles/ContinuousCoverage-Debug | ${cmake_ninja_workdir}CMakeFiles/Con
 # Custom command for CMakeFiles/ContinuousMemCheck-Debug
 
 build CMakeFiles/ContinuousMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousMemCheck-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousMemCheck
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousMemCheck
   pool = console
 
 
@@ -505,7 +515,7 @@ build CMakeFiles/ContinuousMemCheck-Debug | ${cmake_ninja_workdir}CMakeFiles/Con
 # Custom command for CMakeFiles/ContinuousSubmit-Debug
 
 build CMakeFiles/ContinuousSubmit-Debug | ${cmake_ninja_workdir}CMakeFiles/ContinuousSubmit-Debug: CUSTOM_COMMAND
-  COMMAND = cd /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousSubmit
+  COMMAND = cd /home/renato/pf_labs/simulazione_sistema_n_corpi/build && /usr/bin/ctest -C Debug -D ContinuousSubmit
   pool = console
 
 build nbody.t$:Debug: phony Debug/nbody.t
@@ -514,7 +524,7 @@ build nbody$:Debug: phony Debug/nbody
 
 
 #############################################
-# Folder: /home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build
+# Folder: /home/renato/pf_labs/simulazione_sistema_n_corpi/build
 
 build all$:Debug: phony Debug/nbody Debug/nbody.t
 

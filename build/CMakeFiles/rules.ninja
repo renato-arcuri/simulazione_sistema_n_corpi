@@ -137,7 +137,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake --regenerate-during-build -S/home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi -B/home/nicolo/Scrivania/Fisica/Programmazione/simulazione_sistema_n_corpi/build
+  command = /usr/bin/cmake --regenerate-during-build -S/home/renato/pf_labs/simulazione_sistema_n_corpi -B/home/renato/pf_labs/simulazione_sistema_n_corpi/build
   description = Re-running CMake...
   generator = 1
 

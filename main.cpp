@@ -8,17 +8,12 @@
 
 int main(int argc, char *argv[]) {
   try {
+    // Input
     pf::Config cfg{};
-
-    // una riga del file deve essere fatto in questo modo(ogni riga è una
-    // particella): mass rx ry vx vy
-    // la prima riga inizia con @ e contiene i dati i configurazione, se non c'è
-    // vengono usati quelli di default
     if (argc < 2) {
       std::cerr << "Uso: " << argv[0] << " <percorso_file_input>\n";
       return EXIT_FAILURE;
     }
-
     const std::filesystem::path f{argv[1]};
     auto system{pf::read_from(f, cfg)};
 
@@ -35,12 +30,10 @@ int main(int argc, char *argv[]) {
     double L{0.};
 
     // PARTE GRAFICA
-
     sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
-    window.setFramerateLimit(60);  // 60 fps
+    window.setFramerateLimit(60);  // 60 FPS
 
     bool Timeout{false};
-
     std::vector<sf::Color> palette = {sf::Color::Red,   sf::Color::Yellow,
                                       sf::Color::Green, sf::Color::Cyan,
                                       sf::Color::Blue,  sf::Color::Magenta};
@@ -69,6 +62,8 @@ int main(int argc, char *argv[]) {
     std::cout << "-------------------------------------------------------------"
                  "------------------------------------\n";
 
+    float zoom{0.};
+
     while (window.isOpen()) {
       sf::Event event;
 
@@ -89,26 +84,29 @@ int main(int argc, char *argv[]) {
         for (int i{0}; i != cfg.speed; ++i) {
           pf::step(system, cfg);
           ++N_step;
-        }  // the more times the process is iterated, the faster the simulation will run
+        }  // the more times the process is iterated, the faster the simulation
+           // will run
       }
 
       // Draw
       window.clear(sf::Color::Black);
 
-      float zoom;
-      if (cfg.zoom != 0) {
+      if (cfg.zoom > 0.) {
         zoom = static_cast<float>(cfg.zoom);
       } else {
-        double sum_d{0.0};
+        double max_d{0.0};
         for (const auto &p : system) {
-          sum_d += pf::norm(p.getPosition());
+          double d{pf::norm(p.getPosition())};
+          if (d > max_d) {
+            max_d = d;
+          }
         }
-        double mean_d{sum_d / static_cast<double>(system.size())};
-        if (mean_d < 1e-6) {
-          mean_d = 1e-6;
+        if (max_d < 1e-6) {
+          max_d = 1e-6;
         }
 
-        zoom = 50.f / static_cast<float>(mean_d);
+        float target_zoom{350.f / static_cast<float>(max_d)};
+        zoom += 0.05f * (target_zoom - zoom);
       }
 
       for (std::size_t i = 0; i < system.size(); ++i) {
@@ -117,7 +115,7 @@ int main(int argc, char *argv[]) {
         float X{400.f + static_cast<float>(p.getPosition().x) * zoom};
         float Y{300.f - static_cast<float>(p.getPosition().y) * zoom};
 
-        float current_radius = p.getRadius() * zoom;
+        float current_radius{p.getRadius() * zoom};
         if (current_radius < 3.f) {
           current_radius = 3.f;
         }
@@ -129,7 +127,7 @@ int main(int argc, char *argv[]) {
         window.draw(particle);
       }
 
-      if (N_step % (cfg.speed * 60) == 0) {  // stampa ogni 1 secondo
+      if (N_step % (cfg.speed * 60) == 0) {  // print every second
         std::cout << "\n";
 
         E_tot = pf::mechanicalEnergy(system, cfg);
