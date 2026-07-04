@@ -54,8 +54,8 @@ double Particle::angularMomentum() const {
 Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg) {
   Vec r{b.getPosition() - a.getPosition()};
-  double inv_denom{1.0 / (norm2(r) * std::sqrt(r))};
-  return (cfg.G * b.getMass() * inv_denom) * r;
+  double denom{(std::pow(norm(r), 3.0))};
+  return (cfg.G * b.getMass() / denom) * r;
 }
 
 Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
@@ -67,6 +67,20 @@ Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
     }
   }
   return sum;
+}
+
+void computeRadius(std::vector<Particle> &system) {
+  double p_min = system[0].getMass();
+  for (auto &p : system) {
+    if (p.getMass() < p_min) {
+      p_min = p.getMass();
+    }
+  }
+
+  for (auto &p : system) {
+    float rad = static_cast<float>(2 + std::log10(10 * p.getMass() / p_min));
+    p.setRadius(rad);
+  }
 }
 
 void manageCollisions(std::vector<Particle> &system) {

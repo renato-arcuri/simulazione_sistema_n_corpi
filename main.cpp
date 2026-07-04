@@ -45,19 +45,7 @@ int main(int argc, char *argv[]) {
                                       sf::Color::Green, sf::Color::Cyan,
                                       sf::Color::Blue,  sf::Color::Magenta};
 
-    // std::vector<float> radius;
-
-    double p_min = system[0].getMass();
-    for (auto &p : system) {
-      if (p.getMass() < p_min) {  // !!!!!!!!!!!!!!!!!!!!! da cambiare
-        p_min = p.getMass();
-      }
-    }
-
-    for (auto &p : system) {
-      float rad = static_cast<float>(2 + std::log10(10 * p.getMass() / p_min));
-      p.setRadius(rad);
-    }
+    pf::computeRadius(system);
 
     std::cout << "-------------------------------------------------------------"
                  "------------------------------------\n";
@@ -101,27 +89,8 @@ int main(int argc, char *argv[]) {
         for (int i{0}; i != cfg.speed; ++i) {
           pf::step(system, cfg);
           ++N_step;
-        }  // più volte si itera più velocemente avverrà la simulazione
+        }  // the more times the process is iterated, the faster the simulation will run
       }
-
-      /*
-      if (!system.empty()) {
-        double current_p_min = system[0].getMass();
-        for (const auto &p : system) {
-          if (p.getMass() < current_p_min) {
-            current_p_min = p.getMass();
-          }
-        }
-        for (auto &p : system) {
-          float rad = static_cast<float>(
-              (p.getMass() / current_p_min, 10.0));
-          if (rad < 5.f) {
-            rad = 5.f;
-          }
-          p.setRadius(rad);
-        }
-      }
-      */
 
       // Draw
       window.clear(sf::Color::Black);
@@ -160,7 +129,7 @@ int main(int argc, char *argv[]) {
         window.draw(particle);
       }
 
-      if (N_step % cfg.speed == 0) {
+      if (N_step % (cfg.speed * 60) == 0) {  // stampa ogni 1 secondo
         std::cout << "\n";
 
         E_tot = pf::mechanicalEnergy(system, cfg);
@@ -181,11 +150,6 @@ int main(int argc, char *argv[]) {
         std::cout << pf::norm(P);
         std::cout.width(15);
         std::cout << L << "\n";
-
-        // std::cout
-        //     <<
-        //     "-------------------------------------------------------------"
-        //        "------------------------------------\n";
       }
       window.display();
     }  // game loop

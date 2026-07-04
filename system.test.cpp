@@ -3,7 +3,7 @@
 
 #include "doctest.h"
 
-TEST_CASE("Vector operations") {
+TEST_CASE("Vector operations 1") {
   pf::Vec v1{3., 4.};
   pf::Vec v2{1., 2.};
   pf::Vec v3{0., 0.};
@@ -50,39 +50,50 @@ TEST_CASE("Particle members") {
   CHECK(p.getAcceleration().y == 2.);
 }
 
-TEST_CASE("Particle momentum") {
-  pf::Particle p1({0., 0.}, {2., 3.}, 4.);
-  auto mom = p1.momentum();
+// TEST_CASE("Mass & Radius");
 
-  CHECK(mom.x == 8);
-  CHECK(mom.y == 12.);
+TEST_CASE("Momentum") {
+  pf::Particle p1({0., 0.}, {2., 3.}, 4.);
+  pf::Vec mom = p1.momentum();
+
+  CHECK(mom.x == doctest::Approx(8.));
+  CHECK(mom.y == doctest::Approx(12.));
 
   pf::Particle p2({-34., 2.}, {0., -2.}, 2.);
-  auto mom = p2.momentum();
+  pf::Vec mom2 = p2.momentum();
 
-  CHECK(mom.x == 0.);
-  CHECK(mom.y == -4);
+  CHECK(mom2.x == doctest::Approx(0.));
+  CHECK(mom2.y == doctest::Approx(-4.));
 }
 TEST_CASE("Angular momentum") {
   pf::Particle p1({1., 0.}, {0., 2.}, 3.);
   CHECK(p1.angularMomentum() == doctest::Approx(6.));
-  
+
   pf::Particle p2({1., 0.}, {-1., 0.}, 2.);
-  CHECK(p2.angularMomentum() == doctest::approx(0.));
+  CHECK(p2.angularMomentum() == doctest::Approx(0.));
 }
 
-/*
 TEST_CASE("Acceleration contribution") {
   pf::Config cfg;
 
   pf::Particle a({0., 0.}, {3., 0.}, 100000.);
   pf::Particle b({1., 0.}, {2., 1.}, 2000000.);
 
-  auto acc = pf::accelerationContribution(a, b, cfg);
+  pf::Vec acc = pf::accelerationContribution(a, b, cfg);
 
   CHECK(acc.x == doctest::Approx(13.34));
   CHECK(acc.y == doctest::Approx(0.));
+
+  pf::Particle a2({0., -1.}, {-2., -2.}, 2345.);
+  pf::Particle b2({0., 1.}, {44., 2.}, 3343.);
+
+  pf::Vec acc2a = pf::accelerationContribution(a, b, cfg);
+  pf::Vec acc2b = pf::accelerationContribution(b, a, cfg);
+
+  CHECK(acc2a.x == acc2b.x);
+  CHECK(acc2a.y == acc2b.y);
 }
+
 TEST_CASE("Total acceleration") {
   pf::Config cfg;
 
@@ -95,11 +106,13 @@ TEST_CASE("Total acceleration") {
   CHECK(a.x == doctest::Approx(13.34));
   CHECK(a.y == doctest::Approx(13.34));
 }
+
 TEST_CASE("Kinetic energy") {
   std::vector<pf::Particle> sys{{{-2., 3.}, {3., 4.}, 2.}};
 
   CHECK(pf::kineticEnergy(sys) == doctest::Approx(25.));
 }
+
 TEST_CASE("Potential energy") {
   pf::Config cfg;
 
@@ -108,7 +121,8 @@ TEST_CASE("Potential energy") {
 
   CHECK(pf::potentialEnergy(sys, cfg) == doctest::Approx(-13.34));
 }
-TEST_CASE("Total momentum") {
+
+TEST_CASE("Total Momentum") {
   std::vector<pf::Particle> sys{{{0., 0.}, {1., 0.}, 2.},
                                 {{0., 0.}, {-1., 0.}, 2.}};
 
@@ -124,7 +138,20 @@ TEST_CASE("Total momentum") {
   CHECK(P2.x == doctest::Approx(2.));
   CHECK(P2.y == doctest::Approx(0.));
 }
-TEST_CASE("Free particle motion") {
+
+TEST_CASE("Total Angular momentum") {
+  pf::Config cfg;
+  cfg.G = 1.;
+  cfg.dt = 0.01;
+  std::vector<pf::Particle> system;
+
+  system.push_back(pf::Particle{{1.0, 0.0}, {0.0, 1.0}, 2.0});
+  system.push_back(pf::Particle{{-1.0, 0.0}, {0.0, -1.0}, 2.0});
+
+  CHECK(pf::totalAngularMomentum(system) == doctest::Approx(4.0));
+}
+
+TEST_CASE("Free particle motion: computePosition(),setAcceleration()") {
   pf::Config cfg;
   pf::Particle p({0., 0.}, {2000., 3000.}, 1.);
   p.setAcceleration({0., 0.});
@@ -133,5 +160,177 @@ TEST_CASE("Free particle motion") {
 
   CHECK(p.getPosition().x == doctest::Approx(2.));
   CHECK(p.getPosition().y == doctest::Approx(3.));
+  CHECK(p.getAcceleration().x == 0.0);
+  CHECK(p.getAcceleration().y == 0.0);
 }
-*/
+
+TEST_CASE("Velocity Verlet: step(),computeVelocity()") {
+  pf::Config cfg;
+  std::vector<pf::Particle> system;
+
+  pf::Particle p1({10., 5.}, {-1., 3.}, 1.);
+  pf::Particle p2({-10., -5.}, {1., -3.}, 1.);
+  system.push_back(p1);
+  system.push_back(p2);
+
+  pf::step(system, cfg);
+
+  CHECK(p1.getAcceleration().x == doctest::Approx(8.44726e-08));
+  CHECK(p1.getAcceleration().y == doctest::Approx(-2.63612e-07));
+
+  CHECK(p2.getAcceleration().x == doctest::Approx(-8.44726e-08));
+  CHECK(p2.getAcceleration().y == doctest::Approx(2.63612e-07));
+
+  CHECK(p1.getVelocity().x == doctest::Approx(-0.9999873));
+  CHECK(p1.getVelocity().y == doctest::Approx(2.9999604));
+
+  CHECK(p2.getVelocity().x == doctest::Approx(0.9999873));
+  CHECK(p2.getVelocity().y == doctest::Approx(-2.9999604));
+
+  CHECK(system.size() == static_cast<size_t>(2));
+}
+
+TEST_CASE("Manage Collisions: STD") {
+  pf::Config cfg;
+  std::vector<pf::Particle> system;
+  pf::Particle p1({10.0, 0.0}, {3.0, 0.0}, 10.0);
+  pf::Particle p2({-10.0, 0.0}, {3.0, 0.0}, 1.0);
+
+  system.push_back(p1);
+  system.push_back(p2);
+
+  pf::manageCollisions(system);
+
+  CHECK(system[0].getPosition().x == doctest::Approx(8.181818));
+  CHECK(system[0].getPosition().y == doctest::Approx(0.0));
+
+  CHECK(system[0].getVelocity().x == doctest::Approx(3.0));
+  CHECK(system[0].getVelocity().x == doctest::Approx(0.0));
+
+  CHECK(system[0].getMass() == doctest::Approx(11.0));
+
+  CHECK(system.size() == static_cast<size_t>(1));
+}
+
+TEST_CASE("Manage Collisions: OVERLAP") {
+  pf::Config cfg;
+  std::vector<pf::Particle> system;
+
+  system.push_back(pf::Particle({5., 3.}, {10., 0.}, 2.));
+  system.push_back(pf::Particle({5., 3.}, {-10., 0.}, 2.));
+
+  pf::manageCollisions(system);
+
+  CHECK(system[0].getPosition().x == doctest::Approx(5.0));
+  CHECK(system[0].getPosition().y == doctest::Approx(3.0));
+
+  CHECK(system[0].getVelocity().x == doctest::Approx(0.0));
+  CHECK(system[0].getVelocity().y == doctest::Approx(0.0));
+
+  CHECK(system.size() == static_cast<size_t>(1));
+}
+
+TEST_CASE(" Input ") {
+  SUBCASE(" non-existent file ") {
+    pf::Config cfg;
+    CHECK_THROWS_AS(pf::read_from("non-existent_file.txt", cfg),
+                    std::filesystem::filesystem_error);
+  }
+
+  SUBCASE(" empty file ") {
+    pf::Config cfg;
+    std::string const path{"empty_file.txt"};
+    {
+      std::ofstream os(path);
+    }
+    CHECK_THROWS_AS(pf::read_from("empty_file.txt", cfg), std::runtime_error);
+    std::filesystem::remove(path);
+  }
+
+  SUBCASE(" # and @") {
+    pf::Config cfg;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "# comment\n";
+      os << "1.0 10.0 10.0 -1.0 -1.0\n";
+      os << "@ 1.0 1.0 1.0 1\n";
+    }
+    std::vector<pf::Particle> system = pf::read_from(path, cfg);
+
+    CHECK(system.size() == 1);
+    CHECK(system[0].getMass() == doctest::Approx(1.0));
+
+    CHECK(system[0].getPosition().x == doctest::Approx(10.0));
+    CHECK(system[0].getPosition().y == doctest::Approx(10.0));
+
+    CHECK(system[0].getVelocity().x == doctest::Approx(-1.0));
+    CHECK(system[0].getVelocity().y == doctest::Approx(-1.0));
+
+    CHECK(cfg.G == 1.0);
+    CHECK(cfg.zoom == 1.0);
+    CHECK(cfg.dt == 1.0);
+    CHECK(cfg.speed == 1);
+
+    std::filesystem::remove(path);
+  }
+
+  SUBCASE(" without @ ") {
+    pf::Config cfg;
+    pf::Config cfg_default = cfg;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "# comment\n";
+      os << "1.0 10.0 10.0 -1.0 -1.0\n";
+    }
+    std::vector<pf::Particle> system = pf::read_from(path, cfg);
+
+    CHECK(cfg_default.G == 6.67e-11);
+    CHECK(cfg_default.zoom == 0.0);
+    CHECK(cfg_default.dt == 0.001);
+    CHECK(cfg_default.speed == 17);
+    std::filesystem::remove(path);
+  }
+
+  SUBCASE(" STD ") {
+    pf::Config cfg;
+    cfg.dt = 300.0; 
+    cfg.G = 1.0;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "1. 10. 5. -1. 3.\n";
+      os << "1. -10. -5. 1. -3.\n";
+    }
+    std::vector<pf::Particle> system = pf::read_from(path, cfg);
+
+    pf::step(system, cfg);
+
+    CHECK(system[0].getAcceleration().x == doctest::Approx(8.44726e-08));
+    CHECK(system[0].getAcceleration().y == doctest::Approx(-2.63612e-07));
+    CHECK(system[0].getVelocity().x == doctest::Approx(-0.9999873));
+    CHECK(system[0].getVelocity().y == doctest::Approx(2.9999604));
+
+    CHECK(system[1].getAcceleration().x == doctest::Approx(-8.44726e-08));
+    CHECK(system[1].getAcceleration().y == doctest::Approx(2.63612e-07));
+    CHECK(system[1].getVelocity().x == doctest::Approx(0.9999873));
+    CHECK(system[1].getVelocity().y == doctest::Approx(-2.9999604));
+
+    CHECK(system.size() == static_cast<size_t>(2));
+
+    std::filesystem::remove(path);
+  }
+
+  SUBCASE(" negative mass") {
+    pf::Config cfg;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "-1. 10. 5. -1. 3.\n";
+    }
+
+    CHECK_THROWS_AS(pf::read_from("file.txt", cfg), std::invalid_argument);
+    std::filesystem::remove(path);
+  }
+}

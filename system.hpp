@@ -58,6 +58,7 @@ Vec accelerationContribution(const Particle &a, const Particle &b,
                              const Config &cfg);
 Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
                       const Config &cfg);
+void computeRadius(std::vector<Particle> &system);
 void manageCollisions(std::vector<Particle> &system);
 void step(std::vector<Particle> &system, const Config &cfg);
 double kineticEnergy(const std::vector<Particle> &system);
