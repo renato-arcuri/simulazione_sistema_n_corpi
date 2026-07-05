@@ -83,8 +83,7 @@ int main(int argc, char *argv[]) {
         for (int i{0}; i != cfg.speed; ++i) {
           pf::step(system, cfg);
           ++N_step;
-        }  // the more times the process is iterated, the faster the simulation
-           // will run
+        }
       }
 
       // Draw

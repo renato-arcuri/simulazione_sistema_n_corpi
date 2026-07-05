@@ -202,7 +202,6 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
         throw std::invalid_argument{" zoom must be at least 0 "};
       }
     } else {
-      // riga di particella: mass rx ry vx vy
       std::istringstream ss(line);
       double mass, rx, ry, vx, vy;
       if (ss >> mass >> rx >> ry >> vx >> vy) {

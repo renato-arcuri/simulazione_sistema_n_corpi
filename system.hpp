@@ -7,7 +7,7 @@
 namespace pf {
 
 struct Config {
-  // valori di default se non configurati diversamente nel file
+  // default config values
   double G{6.67e-11};
   double zoom{0.};
   double dt{0.001};

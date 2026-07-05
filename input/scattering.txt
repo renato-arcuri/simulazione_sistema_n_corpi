@@ -1,5 +1,7 @@
-# scattering iperbolico, G=1
-@ 1.0 10. 0.001 50
-# mass rx ry vx vy
-10.   0.   0.   0.   0.
-0.1 -10.   1.   1.   0.
+# Deviazione gravitazionale
+# G           zoom  dt      speed
+@ 1.0         5.    0.002   7
+# mass        rx     ry     vx     vy
+15000.0       0.0    0.0    0.0    0.0
+1.0         -80.0   25.0   45.0    0.0
+1.0         -80.0  -25.0   45.0    0.0

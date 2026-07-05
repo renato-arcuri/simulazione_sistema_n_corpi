@@ -1,24 +1,24 @@
-Start testing: Jul 05 15:28 CEST
+Start testing: Jul 05 16:51 CEST
 ----------------------------------------------------------
 1/1 Testing: nbody.t
 1/1 Test: nbody.t
 Command: "/home/renato/pf_labs/simulazione_sistema_n_corpi/build/Release/nbody.t"
 Directory: /home/renato/pf_labs/simulazione_sistema_n_corpi/build
-"nbody.t" start time: Jul 05 15:28 CEST
+"nbody.t" start time: Jul 05 16:51 CEST
 Output:
 ----------------------------------------------------------
 [doctest] doctest version is "2.5.0"
 [doctest] run with "--help" for options
 ===============================================================================
 [doctest] test cases: 11 | 11 passed | 0 failed | 0 skipped
-[doctest] assertions: 96 | 96 passed | 0 failed |
+[doctest] assertions: 94 | 94 passed | 0 failed |
 [doctest] Status: SUCCESS!
 <end of output>
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"nbody.t" end time: Jul 05 15:28 CEST
+"nbody.t" end time: Jul 05 16:51 CEST
 "nbody.t" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Jul 05 15:28 CEST
+End testing: Jul 05 16:51 CEST
