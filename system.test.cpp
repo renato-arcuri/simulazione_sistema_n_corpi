@@ -3,7 +3,7 @@
 
 #include "doctest.h"
 
-TEST_CASE("Vector operations 1") {
+TEST_CASE("Vector operations") {
   pf::Vec v1{3., 4.};
   pf::Vec v2{1., 2.};
   pf::Vec v3{0., 0.};
@@ -136,7 +136,7 @@ TEST_CASE("Velocity Verlet: step()") {
   CHECK(system.size() == static_cast<size_t>(2));
 }
 
-TEST_CASE("Manage Collisions") {
+TEST_CASE("Menage Collisions") {
   SUBCASE("STD") {
     pf::Config cfg;
     cfg.dt = 0.099;
@@ -165,7 +165,6 @@ TEST_CASE("Manage Collisions") {
     CHECK(system[0].getMass() == doctest::Approx(2.0));
 
     CHECK(system.size() == static_cast<size_t>(1));
-
   }
 
   SUBCASE("OVERLAP") {
@@ -175,7 +174,7 @@ TEST_CASE("Manage Collisions") {
     system.push_back(pf::Particle({5., 3.}, {10., 0.}, 2.));
     system.push_back(pf::Particle({5., 3.}, {-10., 0.}, 2.));
 
-    pf::manageCollisions(system);
+    pf::manageCollisions(system, cfg);
 
     CHECK(system[0].getPosition().x == doctest::Approx(5.0));
     CHECK(system[0].getPosition().y == doctest::Approx(3.0));
@@ -297,7 +296,9 @@ TEST_CASE(" Input: read_from() ") {
   SUBCASE(" empty file ") {
     pf::Config cfg;
     std::string const path{"empty_file.txt"};
-    { std::ofstream os(path); }
+    {
+      std::ofstream os(path);
+    }
     CHECK_THROWS_AS(pf::read_from("empty_file.txt", cfg), std::runtime_error);
     std::filesystem::remove(path);
   }

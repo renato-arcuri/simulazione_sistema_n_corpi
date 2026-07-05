@@ -77,7 +77,7 @@ void computeRadius(std::vector<Particle> &system) {
     }
     return;
   }
-  
+
   double min_dist{std::numeric_limits<double>::max()};
   for (std::size_t i{0}; i < system.size(); ++i) {
     for (std::size_t j{i + 1}; j < system.size(); ++j) {
@@ -101,8 +101,9 @@ void computeRadius(std::vector<Particle> &system) {
   }
 }
 
-void manageCollisions(std::vector<Particle> &system) {
+void manageCollisions(std::vector<Particle> &system, const Config &cfg) {
   for (std::size_t i{0}; i < system.size(); ++i) {
+    bool collision{false};
     for (std::size_t j{i + 1}; j < system.size(); ++j) {
       double r{norm(system[i].getPosition() - system[j].getPosition())};
       double r_min =
@@ -125,8 +126,17 @@ void manageCollisions(std::vector<Particle> &system) {
         system[i].setRadius(rad_new);
 
         system.erase(system.begin() + static_cast<long>(j));
-        j = i; // will be incremented to i+1 and the for will restart   
+
+        for (auto &p : system) {
+          p.setAcceleration(totalAcceleration(system, p, cfg));
+        };
+
+        collision = true;
+        break;
       }
+    }
+    if (collision == true) {
+      i = static_cast<size_t>(-1);
     }
   }
 }
@@ -142,7 +152,7 @@ void step(std::vector<Particle> &system, const Config &cfg) {
     p.computeVelocity(a_old, cfg);
   }
 
-  manageCollisions(system);
+  manageCollisions(system, cfg);
 }
 
 double kineticEnergy(const std::vector<Particle> &system) {

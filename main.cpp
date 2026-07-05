@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     // Input
     pf::Config cfg{};
     if (argc < 2) {
-      std::cerr << "Uso: " << argv[0] << " <percorso_file_input>\n";
+      std::cerr << "Use: " << argv[0] << " <path_file_input>\n";
       return EXIT_FAILURE;
     }
     const std::filesystem::path f{argv[1]};
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     pf::Vec P{0., 0.};
     double L{0.};
 
-    // Graphic
+    // Graphics
     sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
     window.setFramerateLimit(60);  // 60 FPS
 
@@ -153,6 +153,7 @@ int main(int argc, char *argv[]) {
       }
       window.display();
     }  // game loop
+
   } catch (std::filesystem::filesystem_error const &e) {
     std::cerr << e.what();
     return EXIT_FAILURE;
@@ -163,4 +164,4 @@ int main(int argc, char *argv[]) {
     std::cerr << "unknown exception\n";
     return EXIT_FAILURE;
   }
-};  // main
+}  // main
