@@ -139,7 +139,7 @@ TEST_CASE("Velocity Verlet: step()") {
 TEST_CASE("Manage Collisions") {
   SUBCASE("STD") {
     pf::Config cfg;
-    cfg.dt = 1.0;
+    cfg.dt = 0.1;
     cfg.G = 1.0;
     std::vector<pf::Particle> system;
     pf::Particle p1({2.0, 0.0}, {-2.0, 0.0}, 1.0);
@@ -148,12 +148,18 @@ TEST_CASE("Manage Collisions") {
     system.push_back(p1);
     system.push_back(p2);
 
-    pf::step(system, cfg);
+    system[0].setAcceleration({0., 0.});
+    system[1].setAcceleration({0., 0.});
     pf::computeRadius(system);
-    pf::manageCollisions(system);
+    pf::Vec mom{pf::totalMomentum(system)};
 
+    for (int i{0}; i != 10; ++i) {
+      pf::step(system, cfg);  // manageCollisions is in step()
+    }
     CHECK(system[0].getPosition().x == doctest::Approx(0.0));
     CHECK(system[0].getVelocity().x == doctest::Approx(-0.5));
+    CHECK(pf::totalMomentum(system).x == doctest::Approx(mom.x));
+
     CHECK(system[0].getMass() == doctest::Approx(2.0));
 
     CHECK(system.size() == static_cast<size_t>(1));

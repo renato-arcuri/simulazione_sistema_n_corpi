@@ -22,7 +22,6 @@ int main(int argc, char *argv[]) {
     };
 
     int N_step{0};
-
     double E_tot{0.};
     double K{0.};
     double U{0.};
@@ -94,12 +93,14 @@ int main(int argc, char *argv[]) {
       if (cfg.zoom > 0.) {
         zoom = static_cast<float>(cfg.zoom);
       } else {
-        double max_d{0.0};
-        for (const auto &p : system) {
-          double d{pf::norm(p.getPosition())};
-          if (d > max_d) {
-            max_d = d;
-          }
+        double max_d{1.e-6};
+        if (!system.empty()) {
+          auto it = std::max_element(
+              system.begin(), system.end(),
+              [](const pf::Particle &a, const pf::Particle &b) {
+                return pf::norm(a.getPosition()) < pf::norm(b.getPosition());
+              });
+          max_d = std::max(max_d, pf::norm(it->getPosition()));
         }
         if (max_d < 1e-6) {
           max_d = 1e-6;

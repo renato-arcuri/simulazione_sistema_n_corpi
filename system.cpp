@@ -1,8 +1,10 @@
 #include "system.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -61,34 +63,31 @@ Vec accelerationContribution(const Particle &a, const Particle &b,
 
 Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
                       const Config &cfg) {
-  Vec sum{0., 0.};
-  for (const auto &other : system) {
-    if (&other != &p) {
-      sum = sum + accelerationContribution(p, other, cfg);
-    }
-  }
-  return sum;
+  return std::accumulate(system.begin(), system.end(), Vec{0., 0.},
+                         [&p, &cfg](const Vec &sum, const Particle &other) {
+                           if (&other == &p) return sum;
+                           return sum + accelerationContribution(p, other, cfg);
+                         });
 }
 
 void computeRadius(std::vector<Particle> &system) {
+  if (system.empty()) return;
+
   double min_dist{std::numeric_limits<double>::max()};
   for (std::size_t i{0}; i < system.size(); ++i) {
     for (std::size_t j{i + 1}; j < system.size(); ++j) {
       double d{norm(system[i].getPosition() - system[j].getPosition())};
-      if (d < min_dist) {
-        min_dist = d;
-      }
+      min_dist = std::min(min_dist, d);
     }
   }
 
   double max_radius{min_dist * 0.1};
 
-  double m_max{system[0].getMass()};
-  for (const auto &p : system) {
-    if (p.getMass() > m_max) {
-      m_max = p.getMass();
-    }
-  }
+  auto max_m_it = std::max_element(system.begin(), system.end(),
+                                   [](const Particle &a, const Particle &b) {
+                                     return a.getMass() < b.getMass();
+                                   });
+  double m_max = max_m_it->getMass();
 
   for (auto &p : system) {
     double ratio{std::pow(p.getMass() / m_max, 1. / 3.)};
@@ -142,11 +141,10 @@ void step(std::vector<Particle> &system, const Config &cfg) {
 }
 
 double kineticEnergy(const std::vector<Particle> &system) {
-  double K{0.};
-  for (const auto &p : system) {
-    K += 0.5 * p.getMass() * norm2(p.getVelocity());
-  }
-  return K;
+  return std::accumulate(
+      system.begin(), system.end(), 0.0, [](double sum, const Particle &p) {
+        return sum + 0.5 * p.getMass() * norm2(p.getVelocity());
+      });
 }
 
 double potentialEnergy(const std::vector<Particle> &system, const Config &cfg) {
@@ -168,19 +166,15 @@ double mechanicalEnergy(const std::vector<Particle> &system,
 }
 
 Vec totalMomentum(const std::vector<Particle> &system) {
-  Vec M{0., 0.};
-  for (const auto &s : system) {
-    M = M + s.momentum();
-  }
-  return M;
+  return std::accumulate(
+      system.begin(), system.end(), Vec{0., 0.},
+      [](const Vec &sum, const Particle &p) { return sum + p.momentum(); });
 }
 
 double totalAngularMomentum(const std::vector<Particle> &system) {
-  double L{0.};
-  for (const auto &s : system) {
-    L = L + s.angularMomentum();
-  }
-  return L;
+  return std::accumulate(
+      system.begin(), system.end(), 0.0,
+      [](double sum, const Particle &p) { return sum + p.angularMomentum(); });
 }
 
 std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
@@ -204,8 +198,7 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
     if (line[0] == '@') {
       std::istringstream ss(line.substr(1));
       ss >> cfg.G >> cfg.zoom >> cfg.dt >> cfg.speed;
-      if(cfg.zoom<0.)
-      {
+      if (cfg.zoom < 0.) {
         throw std::invalid_argument{" zoom must be at least 0 "};
       }
     } else {
