@@ -1,4 +1,4 @@
-# sistema con massa centrale e anello di corpi, G=1
+# sistema con massa centrale e anello di corpi
 @ 1.0 10. 0.001 30
 1000.   0.    0.    0.     0.
 1.     20.    0.    0.     7.07

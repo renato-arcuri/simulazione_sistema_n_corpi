@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
       window.display();
     }  // game loop
   } catch (std::filesystem::filesystem_error const &e) {
-    std::cerr << e.path1();
+    std::cerr << e.what();
     return EXIT_FAILURE;
   } catch (std::exception const &e) {
     std::cerr << e.what() << '\n';

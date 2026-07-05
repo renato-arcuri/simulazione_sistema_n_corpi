@@ -71,8 +71,13 @@ Vec totalAcceleration(const std::vector<Particle> &system, const Particle &p,
 }
 
 void computeRadius(std::vector<Particle> &system) {
-  if (system.empty()) return;
-
+  if (system.size() < 2) {
+    for (auto &p : system) {
+      p.setRadius(5.f);
+    }
+    return;
+  }
+  
   double min_dist{std::numeric_limits<double>::max()};
   for (std::size_t i{0}; i < system.size(); ++i) {
     for (std::size_t j{i + 1}; j < system.size(); ++j) {
@@ -120,7 +125,7 @@ void manageCollisions(std::vector<Particle> &system) {
         system[i].setRadius(rad_new);
 
         system.erase(system.begin() + static_cast<long>(j));
-        --j;
+        j = i; // will be incremented to i+1 and the for will restart   
       }
     }
   }
@@ -199,7 +204,13 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
       std::istringstream ss(line.substr(1));
       ss >> cfg.G >> cfg.zoom >> cfg.dt >> cfg.speed;
       if (cfg.zoom < 0.) {
-        throw std::invalid_argument{" zoom must be at least 0 "};
+        throw std::invalid_argument{" zoom must be at least 0. "};
+      }
+      if (cfg.dt <= 0.) {
+        throw std::invalid_argument{"dt must be positive"};
+      }
+      if (cfg.speed <= 0) {
+        throw std::invalid_argument{"speed must be positive"};
       }
     } else {
       std::istringstream ss(line);
