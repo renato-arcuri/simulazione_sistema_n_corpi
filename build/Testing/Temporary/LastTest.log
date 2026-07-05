@@ -1,58 +1,35 @@
-Start testing: Jul 04 20:03 CEST
+Start testing: Jul 05 12:58 CEST
 ----------------------------------------------------------
 1/1 Testing: nbody.t
 1/1 Test: nbody.t
-Command: "/home/renato/pf_labs/simulazione_sistema_n_corpi/build/Release/nbody.t"
+Command: "/home/renato/pf_labs/simulazione_sistema_n_corpi/build/Debug/nbody.t"
 Directory: /home/renato/pf_labs/simulazione_sistema_n_corpi/build
-"nbody.t" start time: Jul 04 20:03 CEST
+"nbody.t" start time: Jul 05 12:58 CEST
 Output:
 ----------------------------------------------------------
 [doctest] doctest version is "2.5.0"
 [doctest] run with "--help" for options
 ===============================================================================
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:76:
-TEST CASE:  Acceleration contribution
+/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:139:
+TEST CASE:  Manage Collisions
+  STD
 
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:84: ERROR: CHECK( acc.x == doctest::Approx(13.34) ) is NOT correct!
-  values: CHECK( 0.0001334 == Approx( 13.34 ) )
+/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:155: ERROR: CHECK( system[0].getPosition().x == doctest::Approx(0.5) ) is NOT correct!
+  values: CHECK( 0 == Approx( 0.5 ) )
 
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:93: ERROR: CHECK( acc2a.x == acc2b.x ) is NOT correct!
-  values: CHECK( 0.0001334 == -6.67e-06 )
-
-===============================================================================
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:149:
-TEST CASE:  Manage Collisions: STD
-
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:160: ERROR: CHECK( system[0].getPosition().x == doctest::Approx(8.181818) ) is NOT correct!
-  values: CHECK( 10 == Approx( 8.18182 ) )
-
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:164: ERROR: CHECK( system[0].getVelocity().x == doctest::Approx(0.0) ) is NOT correct!
-  values: CHECK( 3 == Approx( 0 ) )
-
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:166: ERROR: CHECK( system[0].getMass() == doctest::Approx(11.0) ) is NOT correct!
-  values: CHECK( 10 == Approx( 11 ) )
-
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:168: ERROR: CHECK( system.size() == static_cast<size_t>(1) ) is NOT correct!
-  values: CHECK( 2 == 1 )
+/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:157: ERROR: CHECK( system[0].getVelocity().x == doctest::Approx(-0.5) ) is NOT correct!
+  values: CHECK( -nan == Approx( -0.5 ) )
 
 ===============================================================================
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:189:
-TEST CASE:  Conserved quantities
-  Total Momentum
-
-/home/renato/pf_labs/simulazione_sistema_n_corpi/system.test.cpp:218: ERROR: CHECK( P2.x == doctest::Approx(2.) ) is NOT correct!
-  values: CHECK( 0 == Approx( 2 ) )
-
-===============================================================================
-[doctest] test cases: 12 |  9 passed | 3 failed | 0 skipped
-[doctest] assertions: 90 | 83 passed | 7 failed |
+[doctest] test cases: 11 | 10 passed | 1 failed | 0 skipped
+[doctest] assertions: 95 | 93 passed | 2 failed |
 [doctest] Status: FAILURE!
 <end of output>
-Test time =   0.01 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Failed.
-"nbody.t" end time: Jul 04 20:03 CEST
+"nbody.t" end time: Jul 05 12:58 CEST
 "nbody.t" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Jul 04 20:03 CEST
+End testing: Jul 05 12:58 CEST

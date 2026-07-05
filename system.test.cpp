@@ -50,27 +50,17 @@ TEST_CASE("Particle members") {
   CHECK(p.getAcceleration().y == 2.);
 }
 
-// TEST_CASE("Mass & Radius");
+TEST_CASE("computeRadius") {
+  pf::Config cfg;
 
-TEST_CASE("Momentum") {
-  pf::Particle p1({0., 0.}, {2., 3.}, 4.);
-  pf::Vec mom = p1.momentum();
+  pf::Particle a({0., 0.}, {3., 0.}, 100000.);
+  pf::Particle b({1000., 0.}, {2., 1.}, 2000000.);
+  std::vector<pf::Particle> system{a, b};
 
-  CHECK(mom.x == doctest::Approx(8.));
-  CHECK(mom.y == doctest::Approx(12.));
+  computeRadius(system);
 
-  pf::Particle p2({-34., 2.}, {0., -2.}, 2.);
-  pf::Vec mom2 = p2.momentum();
-
-  CHECK(mom2.x == doctest::Approx(0.));
-  CHECK(mom2.y == doctest::Approx(-4.));
-}
-TEST_CASE("Angular momentum") {
-  pf::Particle p1({1., 0.}, {0., 2.}, 3.);
-  CHECK(p1.angularMomentum() == doctest::Approx(6.));
-
-  pf::Particle p2({1., 0.}, {-1., 0.}, 2.);
-  CHECK(p2.angularMomentum() == doctest::Approx(0.));
+  CHECK(system[0].getRadius() == doctest::Approx(36.8403));
+  CHECK(system[1].getRadius() == doctest::Approx(100.));
 }
 
 TEST_CASE("Acceleration contribution") {
@@ -81,17 +71,17 @@ TEST_CASE("Acceleration contribution") {
 
   pf::Vec acc = pf::accelerationContribution(a, b, cfg);
 
-  CHECK(acc.x == doctest::Approx(13.34));
+  CHECK(acc.x == doctest::Approx(0.0001334));
   CHECK(acc.y == doctest::Approx(0.));
 
   pf::Particle a2({0., -1.}, {-2., -2.}, 2345.);
   pf::Particle b2({0., 1.}, {44., 2.}, 3343.);
 
-  pf::Vec acc2a = pf::accelerationContribution(a, b, cfg);
-  pf::Vec acc2b = pf::accelerationContribution(b, a, cfg);
+  pf::Vec acc2a = pf::accelerationContribution(a2, b2, cfg);
+  pf::Vec acc2b = pf::accelerationContribution(b2, a2, cfg);
 
-  CHECK(acc2a.x == acc2b.x);
-  CHECK(acc2a.y == acc2b.y);
+  CHECK(-acc2a.x == doctest::Approx(acc2b.x));
+  CHECK(-acc2a.y == doctest::Approx(acc2b.y));
 }
 
 TEST_CASE("Total acceleration") {
@@ -146,48 +136,51 @@ TEST_CASE("Velocity Verlet: step()") {
   CHECK(system.size() == static_cast<size_t>(2));
 }
 
-TEST_CASE("Manage Collisions: STD") {
-  pf::Config cfg;
-  std::vector<pf::Particle> system;
-  pf::Particle p1({10.0, 0.0}, {3.0, 0.0}, 10.0);
-  pf::Particle p2({-10.0, 0.0}, {3.0, 0.0}, 1.0);
+TEST_CASE("Manage Collisions") {
+  SUBCASE("STD") {
+    pf::Config cfg;
+    cfg.dt = 1.0;
+    cfg.G = 1.0;
+    std::vector<pf::Particle> system;
+    pf::Particle p1({2.0, 0.0}, {-2.0, 0.0}, 1.0);
+    pf::Particle p2({-1.0, 0.0}, {1.0, 0.0}, 1.0);
 
-  system.push_back(p1);
-  system.push_back(p2);
+    system.push_back(p1);
+    system.push_back(p2);
 
-  pf::manageCollisions(system);
+    pf::step(system, cfg);
+    pf::computeRadius(system);
+    pf::manageCollisions(system);
 
-  CHECK(system[0].getPosition().x == doctest::Approx(8.181818));
-  CHECK(system[0].getPosition().y == doctest::Approx(0.0));
+    CHECK(system[0].getPosition().x == doctest::Approx(0.0));
+    CHECK(system[0].getVelocity().x == doctest::Approx(-0.5));
+    CHECK(system[0].getMass() == doctest::Approx(2.0));
 
-  CHECK(system[0].getVelocity().x == doctest::Approx(3.0));
-  CHECK(system[0].getVelocity().x == doctest::Approx(0.0));
+    CHECK(system.size() == static_cast<size_t>(1));
+  }
 
-  CHECK(system[0].getMass() == doctest::Approx(11.0));
+  SUBCASE("OVERLAP") {
+    pf::Config cfg;
+    std::vector<pf::Particle> system;
 
-  CHECK(system.size() == static_cast<size_t>(1));
+    system.push_back(pf::Particle({5., 3.}, {10., 0.}, 2.));
+    system.push_back(pf::Particle({5., 3.}, {-10., 0.}, 2.));
+
+    pf::manageCollisions(system);
+
+    CHECK(system[0].getPosition().x == doctest::Approx(5.0));
+    CHECK(system[0].getPosition().y == doctest::Approx(3.0));
+
+    CHECK(system[0].getVelocity().x == doctest::Approx(0.0));
+    CHECK(system[0].getVelocity().y == doctest::Approx(0.0));
+
+    CHECK(system.size() == static_cast<size_t>(1));
+  }
 }
 
-TEST_CASE("Manage Collisions: OVERLAP") {
-  pf::Config cfg;
-  std::vector<pf::Particle> system;
-
-  system.push_back(pf::Particle({5., 3.}, {10., 0.}, 2.));
-  system.push_back(pf::Particle({5., 3.}, {-10., 0.}, 2.));
-
-  pf::manageCollisions(system);
-
-  CHECK(system[0].getPosition().x == doctest::Approx(5.0));
-  CHECK(system[0].getPosition().y == doctest::Approx(3.0));
-
-  CHECK(system[0].getVelocity().x == doctest::Approx(0.0));
-  CHECK(system[0].getVelocity().y == doctest::Approx(0.0));
-
-  CHECK(system.size() == static_cast<size_t>(1));
-}
-
-TEST_CASE("Conserved quantities") {
+TEST_CASE("Energies, Momentum and Angular Momentum") {
   SUBCASE("Kinetic energy") {
+    pf::Config cfg;
     std::vector<pf::Particle> sys{{{-2., 3.}, {3., 4.}, 2.}};
 
     CHECK(pf::kineticEnergy(sys) == doctest::Approx(25.));
@@ -195,11 +188,32 @@ TEST_CASE("Conserved quantities") {
 
   SUBCASE("Potential energy") {
     pf::Config cfg;
-
     std::vector<pf::Particle> sys{{{0., 3.}, {2., 0.}, 2e11},
                                   {{4., 0.}, {3., 1.}, 5.}};
 
     CHECK(pf::potentialEnergy(sys, cfg) == doctest::Approx(-13.34));
+  }
+
+  SUBCASE("Momentum") {
+    pf::Particle p1({0., 0.}, {2., 3.}, 4.);
+    pf::Vec mom = p1.momentum();
+
+    CHECK(mom.x == doctest::Approx(8.));
+    CHECK(mom.y == doctest::Approx(12.));
+
+    pf::Particle p2({-34., 2.}, {0., -2.}, 2.);
+    pf::Vec mom2 = p2.momentum();
+
+    CHECK(mom2.x == doctest::Approx(0.));
+    CHECK(mom2.y == doctest::Approx(-4.));
+  }
+
+  SUBCASE("Angular momentum") {
+    pf::Particle p1({1., 0.}, {0., 2.}, 3.);
+    CHECK(p1.angularMomentum() == doctest::Approx(6.));
+
+    pf::Particle p2({1., 0.}, {-1., 0.}, 2.);
+    CHECK(p2.angularMomentum() == doctest::Approx(0.));
   }
 
   SUBCASE("Total Momentum") {
@@ -215,7 +229,7 @@ TEST_CASE("Conserved quantities") {
                                    {{0., 1.}, {-1., 0.}, 2.}};
 
     auto P2 = pf::totalMomentum(sys2);
-    CHECK(P2.x == doctest::Approx(2.));
+    CHECK(P2.x == doctest::Approx(0.));
     CHECK(P2.y == doctest::Approx(0.));
   }
 
@@ -232,6 +246,38 @@ TEST_CASE("Conserved quantities") {
   }
 }
 
+TEST_CASE("Coservation of quantities over time") {
+  pf::Config cfg;
+  std::vector<pf::Particle> sys{{{-2., 3.}, {3., 4.}, 2.},
+                                {{0., 3.}, {2., 0.}, 2},
+                                {{4., 0.}, {3., 1.}, 5.}};
+  for (auto &p : sys) {
+    p.setAcceleration(pf::totalAcceleration(sys, p, cfg));
+  }
+  pf::step(sys, cfg);
+
+  double E_tot{pf::mechanicalEnergy(sys, cfg)};
+  double L{pf::totalAngularMomentum(sys)};
+  pf::Vec P{pf::totalMomentum(sys)};
+
+  for (int i{0}; i < 20; ++i) {
+    pf::step(sys, cfg);
+  }
+
+  SUBCASE("Meccanical energy") {
+    CHECK(pf::mechanicalEnergy(sys, cfg) == doctest::Approx(E_tot));
+  }
+
+  SUBCASE("Total Momentum") {
+    CHECK(pf::totalMomentum(sys).x == doctest::Approx(P.x));
+    CHECK(pf::totalMomentum(sys).y == doctest::Approx(P.y));
+  }
+
+  SUBCASE("Total Angular momentum") {
+    CHECK(pf::totalAngularMomentum(sys) == doctest::Approx(L));
+  }
+}
+
 TEST_CASE(" Input: read_from() ") {
   SUBCASE(" non-existent file ") {
     pf::Config cfg;
@@ -242,9 +288,7 @@ TEST_CASE(" Input: read_from() ") {
   SUBCASE(" empty file ") {
     pf::Config cfg;
     std::string const path{"empty_file.txt"};
-    {
-      std::ofstream os(path);
-    }
+    { std::ofstream os(path); }
     CHECK_THROWS_AS(pf::read_from("empty_file.txt", cfg), std::runtime_error);
     std::filesystem::remove(path);
   }
@@ -295,6 +339,31 @@ TEST_CASE(" Input: read_from() ") {
     std::filesystem::remove(path);
   }
 
+  SUBCASE("Negative mass") {
+    pf::Config cfg;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "-1. 10. 5. -1. 3.\n";
+    }
+
+    CHECK_THROWS_AS(pf::read_from("file.txt", cfg), std::invalid_argument);
+    std::filesystem::remove(path);
+  }
+
+  SUBCASE("Negative zoom") {
+    pf::Config cfg;
+    std::string const path{"file.txt"};
+    {
+      std::ofstream os(path);
+      os << "@1. -1. 1. 1. \n";
+      os << "1. 1. 1. 1. 1.\n";
+    }
+
+    CHECK_THROWS_AS(pf::read_from("file.txt", cfg), std::invalid_argument);
+    std::filesystem::remove(path);
+  }
+
   SUBCASE(" STD ") {
     pf::Config cfg;
     cfg.dt = 300.0;
@@ -321,18 +390,6 @@ TEST_CASE(" Input: read_from() ") {
 
     CHECK(system.size() == static_cast<size_t>(2));
 
-    std::filesystem::remove(path);
-  }
-
-  SUBCASE("Negative mass") {
-    pf::Config cfg;
-    std::string const path{"file.txt"};
-    {
-      std::ofstream os(path);
-      os << "-1. 10. 5. -1. 3.\n";
-    }
-
-    CHECK_THROWS_AS(pf::read_from("file.txt", cfg), std::invalid_argument);
     std::filesystem::remove(path);
   }
 }

@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     pf::Vec P{0., 0.};
     double L{0.};
 
-    // PARTE GRAFICA
+    // Graphic
     sf::RenderWindow window(sf::VideoMode(800, 600), "N-bodies Simulation");
     window.setFramerateLimit(60);  // 60 FPS
 
@@ -119,6 +119,7 @@ int main(int argc, char *argv[]) {
         if (current_radius < 3.f) {
           current_radius = 3.f;
         }
+
         sf::CircleShape particle(current_radius);
         particle.setOrigin(current_radius, current_radius);
         particle.setPosition(X, Y);
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
         window.draw(particle);
       }
 
+      // Terminal
       if (N_step % (cfg.speed * 60) == 0) {  // print every second
         std::cout << "\n";
 

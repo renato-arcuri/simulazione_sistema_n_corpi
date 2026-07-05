@@ -22,7 +22,7 @@ double norm2(const Vec &v) { return v.x * v.x + v.y * v.y; }
 double norm(const Vec &v) { return std::sqrt(norm2(v)); }
 
 Particle::Particle(Vec p, Vec v, double m)
-    : position_{p}, velocity_{v}, acceleration_{0., 0.}, mass_{m} {
+    : position_{p}, velocity_{v}, acceleration_{0., 0.}, mass_{m}, k_{0.f} {
   if (mass_ <= 0.) {
     throw std::invalid_argument{"mass must be positive"};
   }
@@ -91,7 +91,7 @@ void computeRadius(std::vector<Particle> &system) {
   }
 
   for (auto &p : system) {
-    double ratio{std::cbrt(p.getMass() / m_max)};
+    double ratio{std::pow(p.getMass() / m_max, 1. / 3.)};
     float rad{static_cast<float>(max_radius * ratio)};
     p.setRadius(rad);
   }
@@ -204,6 +204,10 @@ std::vector<Particle> read_from(std::filesystem::path const &p, Config &cfg) {
     if (line[0] == '@') {
       std::istringstream ss(line.substr(1));
       ss >> cfg.G >> cfg.zoom >> cfg.dt >> cfg.speed;
+      if(cfg.zoom<0.)
+      {
+        throw std::invalid_argument{" zoom must be at least 0 "};
+      }
     } else {
       // riga di particella: mass rx ry vx vy
       std::istringstream ss(line);
