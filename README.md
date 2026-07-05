@@ -71,8 +71,6 @@ Il raggio di ogni particella viene stimato in funzione della massa, senza supera
 Dopo aver configurato e buildato il progetto, dalla cartella del progetto:
 
 ```bash
-cmake -S . -B build -G"Ninja Multi-Config"
-cmake --build build --config Debug
 ./build/Debug/nbody input/nome_file.txt
 ```
 
